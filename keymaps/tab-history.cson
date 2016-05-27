@@ -1,0 +1,7 @@
+"atom-workspace":
+  "ctrl-{": "tab-history:forward"
+  "ctrl-{ ^ctrl": "tab-history:select"
+  "ctrl-{ ^shift": "tab-history:select"
+  "ctrl-}": "tab-history:back"
+  "ctrl-} ^ctrl": "tab-history:select"
+  "ctrl-} ^shift": "tab-history:select"

@@ -1,0 +1,11 @@
+{
+  "name": "tab-history",
+  "main": "./lib/tab-history",
+  "version": "1.0.0",
+  "description": "",
+  "repository": "",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.7.3"
+  }
+}
