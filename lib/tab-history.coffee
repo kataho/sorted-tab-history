@@ -1,11 +1,12 @@
 {CompositeDisposable} = require 'atom'
+TabHistoryFacet = require './tab-history-facet'
 
 class TabHistoryManager
   _removeItem: (array, item) ->
     array.splice(index, 1) if (index = array.indexOf(item)) >= 0
     index
 
-  _moveItemTo: (array, item, toIndex) -> 
+  _moveItemTo: (array, item, toIndex) ->
     array.splice(toIndex + (fromIndex < toIndex ? -1 : 0), 0, array.splice(fromIndex, 1)[0]) if (fromIndex = array.indexOf(item)) >= 0
 
   _ringBufferIndex: (array, index) ->
@@ -17,23 +18,29 @@ class TabHistoryManager
     @history = pane.getItems().concat()
     @disposable = new CompositeDisposable
     @headIndex = @history.indexOf pane.getActiveItem()
+    @emitter = new Emitter
 
     @orderWhenChange = false
 
-    @disposable.add pane.onDidAddItem ({item}) => @history.push item
+    @disposable.add pane.onDidAddItem ({item}) =>
+      @history.push item
 
-    @disposable.add pane.onWillRemoveItem ({item}) => index = @_removeItem @history, item; @headIndex-- if @headIndex >= index
+    @disposable.add pane.onWillRemoveItem ({item}) =>
+      index = @_removeItem @history, item
+      @headIndex-- if @headIndex >= index
 
     @disposable.add pane.observeActiveItem (item) =>
-      if @pendingActivation == false
-        if @orderWhenChange then @startObserveChangeOf item else @_moveItemTo @history, item, @headIndex
+      @moveItemToTop item unless @pendingActivation
 
-  startObserveChangeOf: (item) ->
-    @activeEditorCb?.dispose()
-    if atom.workspace.isTextEditor(item)
-      @activeEditorCb = item.onDidStopChanging (event) =>
-        @_moveItemTo @history, item, @headIndex
-        @activeEditorCb?.dispose();
+  moveItemToTop: (item) ->
+    if @orderWhenChange
+      @activeEditorCb?.dispose()
+      if atom.workspace.isTextEditor(item)
+        @activeEditorCb = item.onDidStopChanging =>
+          @_moveItemTo @history, item, @headIndex
+          @activeEditorCb?.dispose();
+    else
+      @_moveItemTo @history, item, @headIndex
 
   back: ->
     @pendingActivation = true
@@ -44,9 +51,18 @@ class TabHistoryManager
     @pane.activateItem @history[@_ringBufferIndex @history, @history.indexOf(@pane.getActiveItem()) - 1]
 
   select: ->
-    item = @pane.getActiveItem()
     @pendingActivation = false
-    if @orderWhenChange then @startObserveChangeOf else @_moveItemTo @history, item, @headIndex
+    @moveItemToTop @pane.getActiveItem()
+
+
+  onStartNavigation: (func) ->
+    @emitter.on 'on-start-navigation', func
+
+  onEndNavigation: (func) ->
+    @emitter.on 'on-end-navigation', func
+
+  onActiveItemChanged: (func) ->
+    @emitter.on 'on-active-item-changed', func
 
   dispose: ->
     @disposable.dispose()
@@ -57,12 +73,11 @@ class TabHistoryManager
 
 
 module.exports =
-  managers: {}
-
   config: {}
 
   activate: (state) ->
     @disposable = new CompositeDisposable
+    @managers = {}
 
     @disposable.add atom.workspace.onDidAddPane ({pane}) => @managers[pane.id] = new TabHistoryManager(pane)
     @disposable.add atom.workspace.onWillDestroyPane ({pane}) => @managers[pane.id].dispose(); delete @managers[pane.id]
@@ -76,5 +91,9 @@ module.exports =
       'tab-history:select': =>
         @managers[pane.id]?.select() if pane = atom.workspace.getActivePane()
 
+    @facet = new TabHistoryFacet
+
   deactivate: ->
     @disposable.dispose()
+    man.dispose() for man in @managers
+    @facet.dispose()
