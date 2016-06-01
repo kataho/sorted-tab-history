@@ -39,7 +39,7 @@ atom-panel.modal.tab-history-facade-panel {
     &.hiding {
       transition: opacity ease-in 0.4s, transform ease-in 0.4s;
       opacity: 0;
-      transform: scale(1.58, 1.58);
+      transform: scale(1.57, 1.57);
     }
   }
 
@@ -48,9 +48,8 @@ atom-panel.modal.tab-history-facade-panel {
     opacity: 0;
   }
 
-  .icon-file-text {
-    display:inline-block;
-    transform: translate(-10px, -10px) scale(2, 2);
-    margin-right: 3px;
+  .icon-file-text::before {
+    transform: scale(2.4, 2.4) translateY(-1px);
+    margin-right: 12px;
   }
 }
