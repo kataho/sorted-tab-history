@@ -10,27 +10,22 @@ module.exports =
       default: false
       title: 'Pop item on select'
       description: 'Make a tab top of the list when it is selected with this function.'
-    itemTopOnActive:
-      order: 2
-      type: 'boolean'
-      default: false
-      title: 'Pop item on alternative select'
-      description: 'Make a tab top of the list when it is selected with an alternative function. (ex. tabs, tree-view)'
-    itemTopOnOpen:
-      order: 3
-      type: 'boolean'
-      default: false
-      title: 'Pop item on open'
-      description: 'Make a tab top of the list when it is opened. (otherwise place on next of current active tab)'
     itemTopOnChange:
-      order: 4
+      order: 2
       type: 'boolean'
       default: false
       title: 'Pop item on change'
       description: 'Make a tab top of the list when its content is changed.'
+    itemMoveOnAltSelect:
+      order: 3
+      type: 'string'
+      default: 'nowhere'
+      title: 'Where to move item on alternative select'
+      description: 'Move a tab when it is selected with an alternative function. (ex. tabs, tree-view)'
+      enum: ['nowhere', 'top', 'forward-active', 'back-active']
     limitItems:
       order:10
-      type: 'number'
+      type: 'integer'
       default: 0
       title: 'Forget old items'
       description: 'Auto close tabs from bottom of the list keeping this limit. (0 for no limit)'

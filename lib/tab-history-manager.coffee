@@ -34,11 +34,7 @@ class TabHistoryManager
 
     @disposable.add pane.onDidAddItem ({item}) =>
       @history.push item
-      if atom.config.get 'tab-history-mrx.itemTopOnOpen'
-        @history.moveItemHead item
-      else
-        @history.moveItemTo item, Math.max(0, @history.indexOf(@pane.getActiveItem()))
-
+      @moveItemOnAltSelect item
       limit = atom.config.get 'tab-history-mrx.limitItems'
       @destroyItemStep(limit) if limit > 0
 
@@ -56,12 +52,18 @@ class TabHistoryManager
       if @navigating
         @emitter.emit 'on-navigate', this
       else
-        @history.moveItemHead item if atom.config.get 'tab-history-mrx.itemTopOnActive'
+        @moveItemOnAltSelect item
 
   destroyItemStep: (limit) ->
     if @history.length > limit
       @pane.destroyItem @history.itemAtOffsetHead(-1)
       setTimeout (=> @destroyItemStep(limit)), 33
+
+  moveItemOnAltSelect: (item) ->
+    switch atom.config.get 'tab-history-mrx.itemMoveOnAltSelect'
+      when 'top' then @history.moveItemHead item
+      when 'forward-active' then @history.moveItemTo item, Math.max(0, @history.indexOf(@pane.getActiveItem()))
+      when 'back-active' then @history.moveItemTo item, Math.max(0, @history.indexOf(@pane.getActiveItem())) + 1
 
   navigate: (stride) ->
     @navigating = true
