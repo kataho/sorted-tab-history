@@ -1,6 +1,6 @@
 {
   "name": "tab-history",
-  "main": "./lib/tab-history",
+  "main": "./lib/main",
   "version": "1.0.0",
   "description": "",
   "repository": "",
