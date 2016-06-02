@@ -53,16 +53,16 @@ module.exports =
       @keymapTimeout = setTimeout (=> @facade.reset()), atom.keymaps.getPartialMatchTimeout() + 100
 
     @disposable.add atom.commands.add 'atom-workspace',
-      'tab-history:forward': =>
+      'tab-history-mrx:forward': =>
         resetAbortTimer()
         @managers[pane.id]?.navigate(-1) if pane = atom.workspace.getActivePane()
-      'tab-history:back': =>
+      'tab-history-mrx:back': =>
         resetAbortTimer()
         @managers[pane.id]?.navigate(1) if pane = atom.workspace.getActivePane()
-      'tab-history:top': =>
+      'tab-history-mrx:top': =>
         resetAbortTimer()
         @managers[pane.id]?.navigateTop() if pane = atom.workspace.getActivePane()
-      'tab-history:select': =>
+      'tab-history-mrx:select': =>
         @managers[pane.id]?.select() if pane = atom.workspace.getActivePane()
 
     # resort to close abandonned modal pane with mousedown

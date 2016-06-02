@@ -1,7 +1,7 @@
 "atom-workspace":
-  "alt-{": "tab-history:top"
-  "alt-{ ^alt": "tab-history:select"
-  "alt-[": "tab-history:forward"
-  "alt-[ ^alt": "tab-history:select"
-  "alt-]": "tab-history:back"
-  "alt-] ^alt": "tab-history:select"
+  "alt-{": "tab-history-mrx:top"
+  "alt-{ ^alt": "tab-history-mrx:select"
+  "alt-[": "tab-history-mrx:forward"
+  "alt-[ ^alt": "tab-history-mrx:select"
+  "alt-]": "tab-history-mrx:back"
+  "alt-] ^alt": "tab-history-mrx:select"

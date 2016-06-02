@@ -6,8 +6,8 @@ class TabHistoryFacade
     @disposable = new CompositeDisposable
 
     @modalItem = document.createElement('ol')
-    @modalItem.classList.add('tab-history-facade')
-    @modal = atom.workspace.addModalPanel {item: @modalItem, visible: false, className: 'tab-history-facade-panel'}
+    @modalItem.classList.add('tab-history-mrx-facade')
+    @modal = atom.workspace.addModalPanel {item: @modalItem, visible: false, className: 'tab-history-mrx-facade-panel'}
 
   renderHistory: (history, activeItem) ->
     diff = history.length - @modalItem.children.length

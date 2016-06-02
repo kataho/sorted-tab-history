@@ -34,19 +34,20 @@ class TabHistoryManager
 
     @disposable.add pane.onDidAddItem ({item}) =>
       @history.push item
-      if atom.config.get 'tab-history.itemTopOnOpen'
+      if atom.config.get 'tab-history-mrx.itemTopOnOpen'
         @history.moveItemHead item
       else
         @history.moveItemTo item, Math.max(0, @history.indexOf(@pane.getActiveItem()))
 
-      @destroyItemStep() if atom.config.get 'tab-history.limitItems' > 0
+      limit = atom.config.get 'tab-history-mrx.limitItems'
+      @destroyItemStep(limit) if limit > 0
 
     @disposable.add pane.onWillRemoveItem ({item}) =>
       @history.removeItem item
 
     @disposable.add pane.observeActiveItem (item) =>
       @activeEditorCb?.dispose()
-      if atom.config.get 'tab-history.itemTopOnChange'
+      if atom.config.get 'tab-history-mrx.itemTopOnChange'
         if atom.workspace.isTextEditor(item)
           @activeEditorCb = item.onDidStopChanging =>
             @history.moveItemHead item
@@ -55,12 +56,12 @@ class TabHistoryManager
       if @navigating
         @emitter.emit 'on-navigate', this
       else
-        @history.moveItemHead item if atom.config.get 'tab-history.itemTopOnActive'
+        @history.moveItemHead item if atom.config.get 'tab-history-mrx.itemTopOnActive'
 
-  destroyItemStep: ->
-    if @history.length > atom.config.get 'tab-history.limitItems'
+  destroyItemStep: (limit) ->
+    if @history.length > limit
       @pane.destroyItem @history.itemAtOffsetHead(-1)
-      setTimeout (=> @destroyItemStep()), 33
+      setTimeout (=> @destroyItemStep(limit)), 33
 
   navigate: (stride) ->
     @navigating = true
@@ -74,7 +75,7 @@ class TabHistoryManager
     if @navigating
       @emitter.emit 'on-end-navigation', this
       @navigating = false
-      @history.moveItemHead @pane.getActiveItem() if atom.config.get 'tab-history.itemTopOnSelect'
+      @history.moveItemHead @pane.getActiveItem() if atom.config.get 'tab-history-mrx.itemTopOnSelect'
 
   onNavigate: (func) ->
     @disposable.add @emitter.on 'on-navigate', func
