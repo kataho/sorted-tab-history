@@ -16,7 +16,7 @@ class TabHistoryFacade
 
     clearTimeout @activateTimeout
     for i in [0...history.length]
-      item = history.itemAtOffsetHead(i)
+      item = history.itemAtModIndex(i)
       element = @modalItem.children[i]
       element.classList.remove('active')
       @activateTimeout = setTimeout ((e) -> -> e.classList.add('active'))(element) if item is activeItem

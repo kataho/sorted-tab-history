@@ -19,10 +19,17 @@ module.exports =
     itemMoveOnAltSelect:
       order: 3
       type: 'string'
-      default: 'nowhere'
+      default: 'forward-active'
       title: 'Where to move item on alternative select'
       description: 'Move a tab when it is selected with an alternative function. (ex. tabs, tree-view)'
-      enum: ['nowhere', 'top', 'forward-active', 'back-active']
+      enum: ['-', 'top', 'forward-active', 'back-active']
+    itemMoveOnOpen:
+      order: 4
+      type: 'string'
+      default: 'forward-active'
+      title: 'Where to move item on open (only active when "-" is selected on above option)'
+      description: 'Move a tab when it is opened.'
+      enum: ['top', 'forward-active', 'back-active']
     limitItems:
       order:10
       type: 'integer'
@@ -45,7 +52,7 @@ module.exports =
     # you should set longer enough partialMatchTimeout to avoid this to get fire
     resetAbortTimer = =>
       clearTimeout @keymapTimeout
-      @keymapTimeout = setTimeout (=> @facade.reset()), atom.keymaps.getPartialMatchTimeout() + 100
+      @keymapTimeout = setTimeout (=> @facade.reset()), atom.keymaps.getPartialMatchTimeout()
 
     @disposable.add atom.commands.add 'atom-workspace',
       'tab-history-mrx:forward': =>

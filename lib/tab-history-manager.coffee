@@ -4,23 +4,19 @@ module.exports =
 class TabHistoryManager
   newHistoryBuffer: (baseArray, headItem) ->
     A = baseArray.concat()
-    A.headIndex = baseArray.indexOf(headItem)
+    A = A.concat(A.splice(0, baseArray.indexOf(headItem)))
 
     A.removeItem = (item) ->
       @splice(index, 1) if (index = @indexOf(item)) >= 0
-      @headIndex-- if index < @headIndex
 
     A.moveItemTo = (item, toIndex) ->
-      @splice(toIndex + (fromIndex < toIndex ? -1 : 0), 0, @splice(fromIndex, 1)[0]) if (fromIndex = @indexOf(item)) >= 0
+      @splice(toIndex + (if fromIndex < toIndex then -1 else 0), 0, @splice(fromIndex, 1)[0]) if (fromIndex = @indexOf(item)) >= 0
 
     A.moveItemHead = (item) ->
-      @moveItemTo item, @headIndex
+      @moveItemTo item, 0
 
     A.itemAtModIndex = (index) ->
       @[(index + @length) % @length]
-
-    A.itemAtOffsetHead = (index) ->
-      @itemAtModIndex @headIndex + index
     A
 
   constructor: (pane) ->
@@ -29,14 +25,17 @@ class TabHistoryManager
     @history = @newHistoryBuffer pane.getItems(), pane.getActiveItem()
     @disposable = new CompositeDisposable
     @emitter = new Emitter
-
+    @lastActiveItem = pane.getActiveItem()
+    @ignoreOnChange = false
     @pendingUntilChange = false
 
     @disposable.add pane.onDidAddItem ({item}) =>
       @history.push item
-      @moveItemOnAltSelect item
+      @moveItemOnAltSelect item, 'tab-history-mrx.itemMoveOnOpen'
       limit = atom.config.get 'tab-history-mrx.limitItems'
-      @destroyItemStep(limit) if limit > 0
+      @destroyItemStep limit, item if limit > 0
+      @ignoreOnChange = true
+      setTimeout (=> @ignoreOnChange = false), 350
 
     @disposable.add pane.onWillRemoveItem ({item}) =>
       @history.removeItem item
@@ -46,24 +45,29 @@ class TabHistoryManager
       if atom.config.get 'tab-history-mrx.itemTopOnChange'
         if atom.workspace.isTextEditor(item)
           @activeEditorCb = item.onDidStopChanging =>
-            @history.moveItemHead item
-            @activeEditorCb?.dispose();
+            unless @ignoreOnChange
+              @history.moveItemHead item
+              @activeEditorCb?.dispose();
 
       if @navigating
         @emitter.emit 'on-navigate', this
       else
-        @moveItemOnAltSelect item
+        @moveItemOnAltSelect item, 'tab-history-mrx.itemMoveOnAltSelect'
 
-  destroyItemStep: (limit) ->
+      @lastActiveItem = item
+
+  destroyItemStep: (limit, keepItem) ->
     if @history.length > limit
-      @pane.destroyItem @history.itemAtOffsetHead(-1)
-      setTimeout (=> @destroyItemStep(limit)), 33
+      i = -1
+      i-- while (item = @history.itemAtModIndex(i)) is keepItem
+      @pane.destroyItem item
+      setTimeout (=> @destroyItemStep(limit, keepItem)), 33
 
-  moveItemOnAltSelect: (item) ->
-    switch atom.config.get 'tab-history-mrx.itemMoveOnAltSelect'
+  moveItemOnAltSelect: (item, configKey) ->
+    switch atom.config.get configKey
       when 'top' then @history.moveItemHead item
-      when 'forward-active' then @history.moveItemTo item, Math.max(0, @history.indexOf(@pane.getActiveItem()))
-      when 'back-active' then @history.moveItemTo item, Math.max(0, @history.indexOf(@pane.getActiveItem())) + 1
+      when 'forward-active' then @history.moveItemTo item, Math.max(0, @history.indexOf(@lastActiveItem))
+      when 'back-active' then @history.moveItemTo item, Math.max(0, @history.indexOf(@lastActiveItem)) + 1
 
   navigate: (stride) ->
     @navigating = true
@@ -71,7 +75,7 @@ class TabHistoryManager
 
   navigateTop: ->
     @navigating = true
-    @pane.activateItem @history.itemAtOffsetHead 0
+    @pane.activateItem @history[0]
 
   select: ->
     if @navigating
