@@ -27,7 +27,6 @@ class TabHistoryManager
     @emitter = new Emitter
     @lastActiveItem = pane.getActiveItem()
     @ignoreOnChange = false
-    @pendingUntilChange = false
 
     @disposable.add pane.onDidAddItem ({item}) =>
       @history.push item
@@ -52,7 +51,8 @@ class TabHistoryManager
       if @navigating
         @emitter.emit 'on-navigate', this
       else
-        @moveItemOnAltSelect item, 'tab-history-mrx.itemMoveOnAltSelect'
+        unless @ignoreOnChange
+          @moveItemOnAltSelect item, 'tab-history-mrx.itemMoveOnAltSelect'
 
       @lastActiveItem = item
 
@@ -68,6 +68,7 @@ class TabHistoryManager
       when 'top' then @history.moveItemHead item
       when 'forward-active' then @history.moveItemTo item, Math.max(0, @history.indexOf(@lastActiveItem))
       when 'back-active' then @history.moveItemTo item, Math.max(0, @history.indexOf(@lastActiveItem)) + 1
+      #TODO when 'bottom' then
 
   navigate: (stride) ->
     @navigating = true
@@ -83,11 +84,21 @@ class TabHistoryManager
       @navigating = false
       @history.moveItemHead @pane.getActiveItem() if atom.config.get 'tab-history-mrx.itemTopOnSelect'
 
+  resetSilently: ->
+    @navigating = false
+
+  reset: ->
+    @emitter.emit 'on-reset', this
+    @navigating = false
+
   onNavigate: (func) ->
     @disposable.add @emitter.on 'on-navigate', func
 
   onEndNavigation: (func) ->
     @disposable.add @emitter.on 'on-end-navigation', func
+
+  onReset: (func) ->
+    @disposable.add @emitter.on 'on-reset', func
 
   dispose: ->
     @disposable.dispose()

@@ -39,11 +39,11 @@ class TabHistoryFacade
         item.classList.remove('hiding') for item in @modalItem.children
       ), 500
 
+    manager.onReset (manager) =>
+      @modal.hide()
+
     @modal.hide()
     manager
-
-  reset: ->
-    @modal.hide()
 
   dispose: ->
     @disposable.dispose()

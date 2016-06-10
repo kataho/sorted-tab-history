@@ -8,28 +8,28 @@ module.exports =
       order: 1
       type: 'boolean'
       default: false
-      title: 'Pop item on select'
+      title: 'Pop an item on select'
       description: 'Make a tab top of the list when it is selected with this function.'
     itemTopOnChange:
       order: 2
       type: 'boolean'
       default: false
-      title: 'Pop item on change'
+      title: 'Pop an item on change'
       description: 'Make a tab top of the list when its content is changed.'
     itemMoveOnAltSelect:
       order: 3
       type: 'string'
       default: 'forward-active'
-      title: 'Where to move item on alternative select'
+      title: 'Where to move an item on alternative select'
       description: 'Move a tab when it is selected with an alternative function. (ex. tabs, tree-view)'
       enum: ['-', 'top', 'forward-active', 'back-active']
     itemMoveOnOpen:
       order: 4
       type: 'string'
       default: 'forward-active'
-      title: 'Where to move item on open (only active when "-" is selected on above option)'
-      description: 'Move a tab when it is opened.'
-      enum: ['top', 'forward-active', 'back-active']
+      title: 'Where to place an item on open'
+      description: 'Place an opened tab. Though an opened tab is generally also selected, overrides setting above.'
+      enum: ['top', 'bottom', 'forward-active', 'back-active']
     limitItems:
       order:10
       type: 'integer'
@@ -41,6 +41,7 @@ module.exports =
     @disposable = new CompositeDisposable
     @managers = {}
     @facade = new TabHistoryFacade
+    @activePaneId = -1
 
     newManagerWithFacade = (pane) =>
       @facade.observeManager new TabHistoryManager(pane)
@@ -49,27 +50,33 @@ module.exports =
     @disposable.add atom.workspace.onWillDestroyPane ({pane}) => @managers[pane.id].dispose(); delete @managers[pane.id]
     @managers[pane.id] = newManagerWithFacade(pane) for pane in atom.workspace.getPanes()
 
+    getActivePaneId = =>
+      currentActivePaneId = atom.workspace.getActivePane()?.id
+      @managers[@activePaneId]?.resetSilently() if @activePaneId != currentActivePaneId
+      @activePaneId = currentActivePaneId
+
     # you should set longer enough partialMatchTimeout to avoid this to get fire
     resetAbortTimer = =>
       clearTimeout @keymapTimeout
-      @keymapTimeout = setTimeout (=> @facade.reset()), atom.keymaps.getPartialMatchTimeout()
+      @keymapTimeout = setTimeout (=> @managers[getActivePaneId()]?.reset()), atom.keymaps.getPartialMatchTimeout()
 
     @disposable.add atom.commands.add 'atom-workspace',
       'tab-history-mrx:forward': =>
         resetAbortTimer()
-        @managers[pane.id]?.navigate(-1) if pane = atom.workspace.getActivePane()
+        @managers[getActivePaneId()]?.navigate(-1)
       'tab-history-mrx:back': =>
         resetAbortTimer()
-        @managers[pane.id]?.navigate(1) if pane = atom.workspace.getActivePane()
+        @managers[getActivePaneId()]?.navigate(1)
       'tab-history-mrx:top': =>
         resetAbortTimer()
-        @managers[pane.id]?.navigateTop() if pane = atom.workspace.getActivePane()
+        @managers[getActivePaneId()]?.navigateTop()
       'tab-history-mrx:select': =>
-        @managers[pane.id]?.select() if pane = atom.workspace.getActivePane()
+        clearTimeout @keymapTimeout
+        @managers[getActivePaneId()]?.select()
 
-    # resort to close abandonned modal pane with mousedown
+    # resort to close abandoned modal pane with mousedown
     atom.views.getView(atom.workspace).addEventListener 'mousedown', (event) =>
-      @facade.reset()
+      @managers[getActivePaneId()]?.reset()
 
   deactivate: ->
     @disposable.dispose()
