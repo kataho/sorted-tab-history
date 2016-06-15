@@ -7,5 +7,23 @@
   "license": "MIT",
   "engines": {
     "atom": ">=1.7.3"
+  },
+  "coffeelintConfig": {
+    "max_line_length": {
+      "value": 120
+    },
+    "colon_assignment_spacing": {
+      "spacing" : {
+        "right": 1,
+        "left": 0
+      },
+      "level": "error"
+    },
+    "space_operators": {
+      "level": "error"
+    },
+    "prefer_english_operator": {
+      "level": "error"
+    }
   }
 }

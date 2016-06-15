@@ -10,7 +10,8 @@ class TabHistoryManager
       @splice(index, 1) if (index = @indexOf(item)) >= 0
 
     A.moveItemTo = (item, toIndex) ->
-      @splice(toIndex + (if fromIndex < toIndex then -1 else 0), 0, @splice(fromIndex, 1)[0]) if (fromIndex = @indexOf(item)) >= 0
+      if (fromIndex = @indexOf(item)) >= 0
+        @splice(toIndex + (if fromIndex < toIndex then -1 else 0), 0, @splice(fromIndex, 1)[0])
 
     A.moveItemHead = (item) ->
       @moveItemTo item, 0
@@ -31,10 +32,10 @@ class TabHistoryManager
     @disposable.add pane.onDidAddItem ({item}) =>
       @history.push item
       @moveItemOnAltSelect item, 'tab-history-mrx.itemMoveOnOpen'
-      limit = atom.config.get 'tab-history-mrx.limitItems'
-      @destroyItemStep limit, item if limit > 0
+      @forgetOldItems limit, item if (limit = atom.config.get 'tab-history-mrx.limitItems') > 0
+      # bypass follwoing events ( active and change )
       @ignoreOnChange = true
-      setTimeout (=> @ignoreOnChange = false), 350
+      setTimeout (=> @ignoreOnChange = false), 150
 
     @disposable.add pane.onWillRemoveItem ({item}) =>
       @history.removeItem item
@@ -43,10 +44,10 @@ class TabHistoryManager
       @activeEditorCb?.dispose()
       if atom.config.get 'tab-history-mrx.itemTopOnChange'
         if atom.workspace.isTextEditor(item)
-          @activeEditorCb = item.onDidStopChanging =>
+          @activeEditorCb = item.getBuffer().onDidStopChanging =>
             unless @ignoreOnChange
               @history.moveItemHead item
-              @activeEditorCb?.dispose();
+              @activeEditorCb?.dispose()
 
       if @navigating
         @emitter.emit 'on-navigate', this
@@ -56,19 +57,24 @@ class TabHistoryManager
 
       @lastActiveItem = item
 
-  destroyItemStep: (limit, keepItem) ->
+  _destroyStep: (limit, keepItem) ->
     if @history.length > limit
-      i = -1
-      i-- while (item = @history.itemAtModIndex(i)) is keepItem
+      for i in [@history.length - 1..0]
+        item = @history[i]
+        break if item isnt keepItem and (not atom.workspace.isTextEditor(item) or not item.isModified())
+        return if i is 0
       @pane.destroyItem item
-      setTimeout (=> @destroyItemStep(limit, keepItem)), 33
+      setTimeout (=> @_destroyStep limit, keepItem), 33
+
+  forgetOldItems: (limit, keepItem) ->
+    @_destroyStep limit, keepItem
 
   moveItemOnAltSelect: (item, configKey) ->
     switch atom.config.get configKey
       when 'top' then @history.moveItemHead item
-      when 'forward-active' then @history.moveItemTo item, Math.max(0, @history.indexOf(@lastActiveItem))
+      when 'front-active' then @history.moveItemTo item, Math.max(0, @history.indexOf(@lastActiveItem))
       when 'back-active' then @history.moveItemTo item, Math.max(0, @history.indexOf(@lastActiveItem)) + 1
-      #TODO when 'bottom' then
+      when 'bottom' then @history.moveItemTo item, @history.length - 1
 
   navigate: (stride) ->
     @navigating = true

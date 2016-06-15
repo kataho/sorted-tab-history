@@ -19,23 +19,25 @@ module.exports =
     itemMoveOnAltSelect:
       order: 3
       type: 'string'
-      default: 'forward-active'
+      default: 'front-active'
       title: 'Where to move an item on alternative select'
       description: 'Move a tab when it is selected with an alternative function. (ex. tabs, tree-view)'
-      enum: ['-', 'top', 'forward-active', 'back-active']
+      enum: ['-', 'top', 'front-active', 'back-active']
     itemMoveOnOpen:
       order: 4
       type: 'string'
-      default: 'forward-active'
+      default: 'front-active'
       title: 'Where to place an item on open'
-      description: 'Place an opened tab. Though an opened tab is generally also selected, overrides setting above.'
-      enum: ['top', 'bottom', 'forward-active', 'back-active']
+      description: 'Place an opened tab. So far, an opened tab is always also selected,
+                    this is overriden by \'alternative select\' setting unless \'-\' is chosen above.'
+      enum: ['top', 'bottom', 'front-active', 'back-active']
     limitItems:
-      order:10
+      order: 10
       type: 'integer'
       default: 0
       title: 'Forget old items'
-      description: 'Auto close tabs from bottom of the list keeping this limit. (0 for no limit)'
+      description: 'Auto close tabs from bottom of the list and attempt not to be higher than this limit.
+                    (0 for no limit)'
 
   activate: (state) ->
     @disposable = new CompositeDisposable
@@ -52,7 +54,7 @@ module.exports =
 
     getActivePaneId = =>
       currentActivePaneId = atom.workspace.getActivePane()?.id
-      @managers[@activePaneId]?.resetSilently() if @activePaneId != currentActivePaneId
+      @managers[@activePaneId]?.resetSilently() if @activePaneId isnt currentActivePaneId
       @activePaneId = currentActivePaneId
 
     # you should set longer enough partialMatchTimeout to avoid this to get fire
