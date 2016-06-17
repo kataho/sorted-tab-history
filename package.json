@@ -3,7 +3,7 @@
   "main": "./lib/main",
   "version": "1.0.0",
   "description": "",
-  "repository": "",
+  "repository": "https://github.com/kataho/tab-history-mrx",
   "license": "MIT",
   "engines": {
     "atom": ">=1.7.3"

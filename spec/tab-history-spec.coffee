@@ -57,9 +57,44 @@ describe 'TabHistoryMRX', ->
     it 'activates item while selection', ->
       expect(activeItemTitle()).toBe 'E4'
       dispatchCommand('tab-history-mrx:back')
+      expect(activeItemTitle()).toBe 'E3'
       dispatchCommand('tab-history-mrx:back')
+      expect(activeItemTitle()).toBe 'E2'
       dispatchCommand('tab-history-mrx:forward')
       expect(activeItemTitle()).toBe 'E3'
+
+  describe 'Options', ->
+    it '(itemTopOnSelect) moves active item top on select', ->
+
+    it '(itemTopOnChnage) moves active item top on content change', ->
+
+    describe 'itemMoveOnAltSelect', ->
+      it '(top) moves selected item top on select by other method to select', ->
+
+      it '(front-active) moves selected item front of last active item on select by other method to select', ->
+
+      it '(back-active) moves selected item back of last active item on select by other method to select', ->
+
+    describe 'itemMoveOnOpen', ->
+      it '(top) moves opened item top', ->
+
+      it '(bottom) moves opened item bottom', ->
+
+      it '(front-active) moves opened item front of last active item', ->
+
+      it '(back-active) moves opened item back of last active item', ->
+
+      it '"alter select" option overrides this option', ->
+
+      it 'properly ignores options bound on events which come just after open', ->
+
+    describe 'limitItems', ->
+      it 'automatically close and dispose item not to exceed limit of items in the list', ->
+
+      it 'does not close item on bottom but modified', ->
+
+      it 'does not close item on bottom but active currently', ->
+
 
 ###
   describe 'Reorder list', ->
