@@ -10,26 +10,36 @@ class TabHistoryFacade
     @modal = atom.workspace.addModalPanel {item: @modalItem, visible: false, className: 'tab-history-mrx-facade-panel'}
 
   renderHistory: (history, activeItem) ->
+    list = history.sortedItemList()
     createListItem = ->
       li = document.createElement('li')
       span = document.createElement('span')
       span.classList.add('icon-file-text')
       li.appendChild(span)
+      span = document.createElement('span')
+      span.classList.add('stamp-detail')
+      li.appendChild(span)
       li
 
-    diff = history.length - @modalItem.children.length
+    diff = list.length - @modalItem.children.length
     @modalItem.appendChild(createListItem()) for i in [0...diff] if diff > 0
     @modalItem.removeChild(@modalItem.firstChild) for i in [0...diff] if diff < 0
 
     clearTimeout @activateTimeout
-    for i in [0...history.length]
-      item = history[i]
+    for i in [0...list.length]
+      item = list[i]
       element = @modalItem.children[i]
       span = element.children[0]
+      detail = element.children[1]
       element.classList.remove('active')
       @activateTimeout = setTimeout ((e) -> -> e.classList.add('active'))(element) if item is activeItem
       span.setAttribute('data-name', item.getTitle())
       span.innerText = item.getTitle()
+
+      stampValues = ''
+      for name, value of history.stampOfItem item
+        stampValues += name + ':' + (if value isnt 0 then (Math.floor((Date.now() - value) / 1000)) else '-') + ' '
+      detail.innerText = stampValues
 
   observeManager: (manager) ->
     manager.onNavigate (manager) =>

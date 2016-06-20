@@ -31,10 +31,7 @@ atom-panel.modal.tab-history-mrx-facade-panel {
 .tab-history-mrx-facade li {
   background: radial-gradient(fade(@pane-item-background-color, 90%) 35%, fade(@pane-item-background-color, 0%) 70%);
   text-shadow: 0px 0px 5px @pane-item-background-color;
-  font-size: 20pt;
   white-space: nowrap;
-  color: mix(@text-color, @pane-item-background-color, 80%);
-
   transition: transform ease-out 0.2s, margin ease-out 0.2s, color 0.1s;
 
   &.active {
@@ -54,8 +51,19 @@ atom-panel.modal.tab-history-mrx-facade-panel {
     opacity: 0;
   }
 
+  .icon-file-text {
+    font-size: 20pt;
+    color: mix(@text-color, @pane-item-background-color, 80%);
+  }
+
   .icon-file-text::before {
     transform: scale(2.4, 2.4) translateY(-1px);
     margin-right: 12px;
+  }
+
+  .stamp-detail {
+    display: block;
+    transform:
+    color: white;
   }
 }
