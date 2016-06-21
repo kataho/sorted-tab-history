@@ -38,7 +38,7 @@ class TabHistoryFacade
 
       stampValues = ''
       for name, value of history.stampOfItem item
-        stampValues += name + ':' + (if value isnt 0 then (Math.floor((Date.now() - value) / 1000)) else '-') + ' '
+        stampValues += (if value != 0 then name + ':' + (Math.floor((Date.now() - value) / 1000)) else '') + ' '
       detail.innerText = stampValues
 
   observeManager: (manager) ->

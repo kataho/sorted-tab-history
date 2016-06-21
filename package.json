@@ -21,9 +21,6 @@
     },
     "space_operators": {
       "level": "error"
-    },
-    "prefer_english_operator": {
-      "level": "error"
     }
   }
 }

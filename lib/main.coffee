@@ -32,12 +32,18 @@ module.exports =
       title: 'Sorting priority rank for editor save'
       description: ''
       enum: [1, 2, 3, 4, 5]
+    timeoutMinutes:
+      order: 10
+      type: 'integer'
+      default: 3600
+      title: 'Drop longer elapsed time (minutes)'
+      description: 'Actions older than this is treated as it have not been triggerred'
     limitItems:
       order: 20
       type: 'integer'
       default: 0
-      title: 'Forget old items'
-      description: 'Auto close tabs from bottom of the list and attempt not to be higher than this limit.
+      title: 'Limit tabs'
+      description: 'Keep number of opened tabs below this by closing tabs from bottom of the sort result
                     (0 for no limit)'
 
   activate: (state) ->

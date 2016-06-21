@@ -30,15 +30,21 @@ class HistoryBuffer
 
   sortedItemList: ->
     return @sortedItemListCache if @sortedItemListCache isnt null
+    configPrefix = @configPrefix
+    timeoutTime = Date.now() - atom.config.get('tab-history-mrx.timeoutMinutes') * 60 * 1000
     sortRanks = @stampNames
       .map (name) ->
-        {name: name, rank: atom.config.get @configPrefix + name}
+        {name: name, rank: atom.config.get(configPrefix + name)}
       .sort (a, b) ->
         a.rank - b.rank
     @sortedItemListCache = @stamps
       .sort (a, b) ->
         for {name} in sortRanks
-          return d if (d = b[name] - a[name]) isnt 0
+          aval = a[name] - timeoutTime
+          aval = 0 if aval < 0
+          bval = b[name] - timeoutTime
+          bval = 0 if bval < 0
+          return d if (d = bval - aval) != 0
         0
       .map (element) ->
         element.item

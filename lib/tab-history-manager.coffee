@@ -18,11 +18,16 @@ class TabHistoryManager
       @history.removeItem item
 
     @disposable.add pane.observeActiveItem (item) =>
-      @activeEditorCb?.dispose()
+      @activeEditorChangeCb?.dispose()
+      @activeEditorCursorCb?.dispose()
+      @activeEditorSaveCb?.dispose()
       if atom.workspace.isTextEditor(item)
-        @activeEditorCb = item.getBuffer().onDidStopChanging =>
-          @history.stamp item, 'change'
-          @activeEditorCb?.dispose()
+        @activeEditorChangeCb = item.getBuffer().onDidStopChanging =>
+          @history.stamp item, 'change' if item.isModified()
+        @activeEditorCursorCb = item.onDidChangeCursorPosition =>
+          @history.stamp item, 'cursor'
+        @activeEditorSaveCb = item.getBuffer().onWillSave =>
+          @history.stamp item, 'save'
 
       if @navigating
         @emitter.emit 'on-navigate', this
@@ -34,7 +39,7 @@ class TabHistoryManager
       for i in [@history.length - 1..0]
         item = @history[i]
         break if item isnt keepItem and (not atom.workspace.isTextEditor(item) or not item.isModified())
-        return if i is 0
+        return if i == 0
       @pane.destroyItem item
       setTimeout (=> @_destroyStep limit, keepItem), 33
 
@@ -75,4 +80,6 @@ class TabHistoryManager
 
   dispose: ->
     @disposable.dispose()
-    @activeEditorCb?.dispose()
+    @activeEditorChangeCb?.dispose()
+    @activeEditorCursorCb?.dispose()
+    @activeEditorSaveCb?.dispose()
