@@ -35,9 +35,10 @@ class TabHistoryManager
         @history.stamp item, 'select'
 
   _destroyStep: (limit, keepItem) ->
-    if @history.length > limit
-      for i in [@history.length - 1..0]
-        item = @history[i]
+    list = @history.sortedItemList()
+    if list.length > limit
+      for i in [list.length - 1..0]
+        item = list[i]
         break if item isnt keepItem and (not atom.workspace.isTextEditor(item) or not item.isModified())
         return if i == 0
       @pane.destroyItem item
