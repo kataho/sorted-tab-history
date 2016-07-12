@@ -1,8 +1,9 @@
 describe 'TabHistoryMRX', ->
   activeItemTitle = -> atom.workspace.getActivePane().getActiveItem().getTitle()
   dispatchCommand = (cmd) -> atom.commands.dispatch(atom.views.getView(atom.workspace), cmd)
-  internalListTitles = -> (historyManager.history[n].item.getTitle() for n in [0..3]).join(' ')
-  atomTabTitles = -> (atom.workspace.getActivePane().itemAtIndex(n).getTitle() for n in [0..3]).join(' ')
+  internalListTitles = ->
+    historyManager.history.sortedItemList().reduce ((prev, cur) ->
+      (if prev.length > 0 then prev + ',' else '') + cur.getTitle()), ''
 
   historyManager = null
   workspaceElement = null
@@ -17,14 +18,16 @@ describe 'TabHistoryMRX', ->
 
     waitsForPromise ->
       activationPromise.then ->
-        historyManager = atom.packages.getActivePackage('tab-history-mrx').mainModule.managers[0]
+        historyManager = atom.packages.getActivePackage('tab-history-mrx')
+          .mainModule.managers[atom.workspace.getActivePane().id]
 
     waitsForPromise ->
-      atom.config.set('tab-history-mrx.itemTopOnSelect', false)
-      atom.config.set('tab-history-mrx.itemTopOnChange', false)
-      atom.config.set('tab-history-mrx.itemMoveOnAltSelect', 'front-active')
-      atom.config.set('tab-history-mrx.itemMoveOnOpen', 'front-active')
-      atom.config.set('tab-history-mrx.limitItems', 10)
+      atom.config.set('tab-history-mrx.sortRank_select', 4)
+      atom.config.set('tab-history-mrx.sortRank_cursor', 3)
+      atom.config.set('tab-history-mrx.sortRank_change', 2)
+      atom.config.set('tab-history-mrx.sortRank_save', 1)
+      atom.config.set('tab-history-mrx.timeoutMinutes', 180)
+      atom.config.set('tab-history-mrx.limitItems', 5)
       atom.workspace.open('E1').then ->
         atom.workspace.open('E2').then ->
           atom.workspace.open('E3').then ->
@@ -64,29 +67,19 @@ describe 'TabHistoryMRX', ->
       expect(activeItemTitle()).toBe 'E3'
 
   describe 'Options', ->
-    it '(itemTopOnSelect) moves active item top on select', ->
+    describe 'sort by multiple order', ->
+      it 'sorts items on test setting 0', ->
+        expect(internalListTitles()).toBe 'E4,E3,E2,E1'
 
-    it '(itemTopOnChnage) moves active item top on content change', ->
+      it 'sorts items on test setting 1', ->
 
-    describe 'itemMoveOnAltSelect', ->
-      it '(top) moves selected item top on select by other method to select', ->
 
-      it '(front-active) moves selected item front of last active item on select by other method to select', ->
+      it 'sorts items on test setting 2', ->
 
-      it '(back-active) moves selected item back of last active item on select by other method to select', ->
+      it 'sorts items on test setting 3', ->
 
-    describe 'itemMoveOnOpen', ->
-      it '(top) moves opened item top', ->
-
-      it '(bottom) moves opened item bottom', ->
-
-      it '(front-active) moves opened item front of last active item', ->
-
-      it '(back-active) moves opened item back of last active item', ->
-
-      it '"alter select" option overrides this option', ->
-
-      it 'properly ignores options bound on events which come just after open', ->
+    describe 'timeoutMinutes', ->
+      it 'ignores timestamp of action older then timeoutMinutes', ->
 
     describe 'limitItems', ->
       it 'automatically close and dispose item not to exceed limit of items in the list', ->
@@ -95,6 +88,18 @@ describe 'TabHistoryMRX', ->
 
       it 'does not close item on bottom but active currently', ->
 
+  describe 'Facade testable', ->
+    describe 'sub-title', ->
+      it 'generates sub-title by last difference of path fragments', ->
+
+      it 'gives up making sub-title of item which can not getPath', ->
+
+    describe 'formating time elapsed', ->
+      it 'shows secs if elapsed time is less than a min', ->
+
+      it 'shows mins if elapsed time is less than an hour', ->
+
+      it 'shows hours if elapsed time is much than an hour', ->
 
 ###
   describe 'Reorder list', ->

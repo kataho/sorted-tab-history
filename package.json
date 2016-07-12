@@ -2,7 +2,7 @@
   "name": "tab-history-mrx",
   "main": "./lib/main",
   "version": "1.0.0",
-  "description": "",
+  "description": "Yet another tab item manager which sorts items by most recently anything.",
   "repository": "https://github.com/kataho/tab-history-mrx",
   "license": "MIT",
   "engines": {
