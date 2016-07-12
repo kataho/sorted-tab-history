@@ -8,42 +8,42 @@ module.exports =
       order: 1
       type: 'integer'
       default: 4
-      title: 'Sorting priority rank for tab item select'
+      title: 'Sorting priority rank for selection of tab item'
       description: ''
       enum: [1, 2, 3, 4, 5]
     sortRank_cursor:
       order: 2
       type: 'integer'
       default: 3
-      title: 'Sorting priority rank for editor cursor move'
+      title: 'Sorting priority rank for cursor moving in an editor'
       description: ''
       enum: [1, 2, 3, 4, 5]
     sortRank_change:
       order: 3
       type: 'integer'
       default: 2
-      title: 'Sorting priority rank for editor change'
+      title: 'Sorting priority rank for change of content'
       description: ''
       enum: [1, 2, 3, 4, 5]
     sortRank_save:
       order: 4
       type: 'integer'
       default: 1
-      title: 'Sorting priority rank for editor save'
+      title: 'Sorting priority rank for save of content'
       description: ''
       enum: [1, 2, 3, 4, 5]
     timeoutMinutes:
       order: 10
       type: 'integer'
-      default: 3600
-      title: 'Ignore too old actions (minutes)'
-      description: 'Actions past longer than this is ignored'
+      default: 180
+      title: 'Expiration minutes of events'
+      description: 'An event past longer than this is ignored and the item is sorted by lesser rank events.'
     limitItems:
       order: 20
       type: 'integer'
       default: 0
       title: 'Maximum tabs in a pane'
-      description: 'Keep number of opened tabs below this by closing tabs from bottom of the sort result
+      description: 'Keep number of tabs by closing last tabs of the sort result.
                     (0 for no limit)'
 
   activate: (state) ->
