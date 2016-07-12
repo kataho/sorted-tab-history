@@ -12,10 +12,9 @@ atom-panel.modal.tab-history-mrx-facade-panel {
   box-shadow: none;
 
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  align-content: center;
 
   &::before {
     background-color: transparent;
@@ -23,26 +22,39 @@ atom-panel.modal.tab-history-mrx-facade-panel {
 }
 
 .tab-history-mrx-facade {
-  text-align: center;
   list-style: none;
   padding: 0;
 }
 
 .tab-history-mrx-facade li {
-  background: radial-gradient(fade(@pane-item-background-color, 90%) 35%, fade(@pane-item-background-color, 0%) 70%);
-  text-shadow: 0px 0px 5px @pane-item-background-color;
-  white-space: nowrap;
+  //background: radial-gradient(fade(@pane-item-background-color, 90%) 35%, fade(@pane-item-background-color, 0%) 70%);
+  background: linear-gradient(to right, fade(@pane-item-background-color, 0%) 0%, fade(@pane-item-background-color, 90%) 10%, fade(@pane-item-background-color, 0%) 100%);
   transition: transform ease-out 0.2s, margin ease-out 0.2s, color 0.1s;
+  padding: 0px 0px 0px 10px;
+
+  .icon-file-text {
+    text-shadow: 0px 0px 5px @pane-item-background-color;
+    white-space: nowrap;
+    font-size: 28px;
+    color: mix(@text-color, @pane-item-background-color, 80%);
+
+    &::before {
+      transform: scale(2.4, 2.4) translateY(-1px);
+      margin-right: 12px;
+      margin-left: 13px;
+    }
+  }
+
 
   &.active {
-    transform: scale(1.5, 1.5);
+    transform: scale(1.5, 1.5) translateX(55px);
     color: @text-color;
-    margin: 8px 0px;
+    margin: 16px 0px;
 
     &.hiding {
       transition: opacity ease-in 0.4s, transform ease-in 0.4s;
       opacity: 0;
-      transform: scale(1.57, 1.57);
+      transform: scale(1.57, 1.57) translateX(50px);
     }
   }
 
@@ -51,19 +63,33 @@ atom-panel.modal.tab-history-mrx-facade-panel {
     opacity: 0;
   }
 
-  .icon-file-text {
-    font-size: 20pt;
-    color: mix(@text-color, @pane-item-background-color, 80%);
+  .info-container {
+    display:flex;
+    flex-direction: row;
+    margin: -5px auto 5px 9px;
+    padding-bottom: 5px;
+    justify-content: flex-start;
+    font-size: 11px;
   }
 
-  .icon-file-text::before {
-    transform: scale(2.4, 2.4) translateY(-1px);
-    margin-right: 12px;
+  .file-info {
   }
 
-  .stamp-detail {
-    display: block;
-    transform:
-    color: white;
+  .stamp-delay {
+    font-weight: bold;
+    min-width: 35px;
+
+    &[name=select] {
+      color:green;
+    }
+    &[name=change] {
+      color:blue;
+    }
+    &[name=cursor] {
+      color:orange;
+    }
+    &[name=save] {
+      color:red;
+    }
   }
 }

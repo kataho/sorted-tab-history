@@ -36,13 +36,13 @@ module.exports =
       order: 10
       type: 'integer'
       default: 3600
-      title: 'Drop longer elapsed time (minutes)'
-      description: 'Actions older than this is treated as it have not been triggerred'
+      title: 'Ignore too old actions (minutes)'
+      description: 'Actions past longer than this is ignored'
     limitItems:
       order: 20
       type: 'integer'
       default: 0
-      title: 'Limit tabs'
+      title: 'Maximum tabs in a pane'
       description: 'Keep number of opened tabs below this by closing tabs from bottom of the sort result
                     (0 for no limit)'
 

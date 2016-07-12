@@ -8,17 +8,25 @@ class TabHistoryFacade
     @modalItem = document.createElement('ol')
     @modalItem.classList.add('tab-history-mrx-facade')
     @modal = atom.workspace.addModalPanel {item: @modalItem, visible: false, className: 'tab-history-mrx-facade-panel'}
+    @displayTime = 0
 
   renderHistory: (history, activeItem) ->
     list = history.sortedItemList()
+
     createListItem = ->
       li = document.createElement('li')
-      span = document.createElement('span')
-      span.classList.add('icon-file-text')
-      li.appendChild(span)
-      span = document.createElement('span')
-      span.classList.add('stamp-detail')
-      li.appendChild(span)
+      e = document.createElement('div')
+      e.classList.add('icon-file-text')
+      li.appendChild(e)
+      info = document.createElement('div')
+      info.classList.add('info-container')
+      li.appendChild(info)
+      e = document.createElement('span')
+      e.classList.add('stamp-delay')
+      info.appendChild(e)
+      e = document.createElement('span')
+      e.classList.add('file-info')
+      info.appendChild(e)
       li
 
     diff = list.length - @modalItem.children.length
@@ -30,19 +38,32 @@ class TabHistoryFacade
       item = list[i]
       element = @modalItem.children[i]
       span = element.children[0]
-      detail = element.children[1]
       element.classList.remove('active')
       @activateTimeout = setTimeout ((e) -> -> e.classList.add('active'))(element) if item is activeItem
       span.setAttribute('data-name', item.getTitle())
       span.innerText = item.getTitle()
 
-      stampValues = ''
-      for name, value of history.stampOfItem item
-        stampValues += (if value != 0 then name + ':' + (Math.floor((Date.now() - value) / 1000)) else '') + ' '
-      detail.innerText = stampValues
+      info = history.restInfoOfItem item
+
+      identElm = element.children[1].children[1]
+      identElm.innerText = if 'ident' of info then info.ident else ''
+
+      stampElm = element.children[1].children[0]
+      stampElm.innerText = ''
+      if 'sortbase' of info
+        stampElm.setAttribute('name', info.sortbase)
+        stampElm.innerText = @formatDelayTime(@displayTime - info[info.sortbase])
+
+  formatDelayTime: (mills) ->
+    hours = Math.floor(mills / (1000 * 60 * 60))
+    return hours + 'h' if hours > 0
+    mins = Math.floor(mills / (1000 * 60))
+    return mins + 'm' if mins > 0
+    return Math.floor(mills / 1000) + 's'
 
   observeManager: (manager) ->
     manager.onNavigate (manager) =>
+      @displayTime = Date.now() if @displayTime == 0
       unless @modal.isVisible()
         @modal.show()
       else if @modalItem.children[0]?.classList.contains('hiding')
@@ -52,6 +73,7 @@ class TabHistoryFacade
       @renderHistory manager.history, manager.pane.getActiveItem()
 
     manager.onEndNavigation (manager) =>
+      @displayTime = 0
       item.classList.add('hiding') for item in @modalItem.children
       @hideTimeout = setTimeout (=>
         @modal.hide()
