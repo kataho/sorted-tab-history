@@ -24,30 +24,34 @@ class HistoryBuffer
       @stamps[index][stampOn] = Date.now()
       @sortedItemListCache = null
 
-  restInfoOfItem: (item) ->
+  extraInfoOfItem: (item) ->
     found = Object.assign {}, @stamps.find (element) -> element.item is item
-    delete found['item'] if found
+    delete found.item if found
     found
 
   sortedItemList: ->
     return @sortedItemListCache if @sortedItemListCache isnt null
-    timeoutTime = Date.now() - atom.config.get('tab-history-mrx.timeoutMinutes') * 60 * 1000
+    timeoutTimeEnable = Date.now() - atom.config.get('tab-history-mrx.timeoutMinutes') * 60 * 1000
     configPrefix = @configPrefix
     sortRanks = @stampNames
       .map (name) ->
         {name: name, rank: atom.config.get(configPrefix + name)}
       .sort (a, b) ->
         a.rank - b.rank
+    ignoreRank = @stampNames.length + 1 # largest value of rank in settings selection is ignored
+    sortRanks.pop() while sortRanks.length > 0 and sortRanks[sortRanks.length - 1].rank is ignoreRank
+    minRank = sortRanks[sortRanks.length - 1].rank # worst ranked event is never timed out
+    sortRanks.forEach (element) -> element.timeoutTime = if element.rank == minRank then 0 else timeoutTimeEnable
+    @stamps.forEach (element) -> delete element.sortFactor
     @sortedItemListCache = @stamps
       .sort (a, b) ->
-        for {name} in sortRanks
+        for {name, rank, timeoutTime} in sortRanks
           aval = Math.max(0, a[name] - timeoutTime)
           bval = Math.max(0, b[name] - timeoutTime)
-          d = bval - aval
-          if d != 0
-            a['sortbase'] = name if d < 0
-            b['sortbase'] = name if d > 0
-            return d
+          if aval != bval
+            a.sortFactor = name if aval > 0
+            b.sortFactor = name if bval > 0
+            return bval - aval
         0
       .map (element) ->
         element.item
@@ -67,5 +71,5 @@ class HistoryBuffer
             for pathIndex in [1..Math.min(pathElms[0].length, pathElms[1].length)]
               ident = pathElms.map (e) -> e[e.length - pathIndex]
               break if ident[0] != ident[1]
-            @stamps[i]['ident'] = ident[0]
-            newItem['ident'] = ident[1]
+            @stamps[i].ident = ident[0]
+            newItem.ident = ident[1]

@@ -1,9 +1,8 @@
 describe 'TabHistoryMRX', ->
+  activeItem = -> atom.workspace.getActivePane().getActiveItem()
   activeItemTitle = -> atom.workspace.getActivePane().getActiveItem().getTitle()
   dispatchCommand = (cmd) -> atom.commands.dispatch(atom.views.getView(atom.workspace), cmd)
-  internalListTitles = ->
-    historyManager.history.sortedItemList().reduce ((prev, cur) ->
-      (if prev.length > 0 then prev + ',' else '') + cur.getTitle()), ''
+  internalListTitles = -> historyManager.history.sortedItemList().reduce ((p, c) -> (p && p + ',') + c.getTitle()), ''
 
   historyManager = null
   workspaceElement = null
@@ -23,8 +22,8 @@ describe 'TabHistoryMRX', ->
 
     waitsForPromise ->
       atom.config.set('tab-history-mrx.sortRank_select', 4)
-      atom.config.set('tab-history-mrx.sortRank_cursor', 3)
-      atom.config.set('tab-history-mrx.sortRank_change', 2)
+      atom.config.set('tab-history-mrx.sortRank_change', 3)
+      atom.config.set('tab-history-mrx.sortRank_cursor', 2)
       atom.config.set('tab-history-mrx.sortRank_save', 1)
       atom.config.set('tab-history-mrx.timeoutMinutes', 180)
       atom.config.set('tab-history-mrx.limitItems', 5)
@@ -66,40 +65,94 @@ describe 'TabHistoryMRX', ->
       dispatchCommand('tab-history-mrx:forward')
       expect(activeItemTitle()).toBe 'E3'
 
-  describe 'Options', ->
-    describe 'sort by multiple order', ->
-      it 'sorts items on test setting 0', ->
-        expect(internalListTitles()).toBe 'E4,E3,E2,E1'
+  describe 'Settings: sorting items', ->
+    it 'sorts with various kind of event', ->
+      # initial order
+      expect(internalListTitles()).toBe 'E4,E3,E2,E1'
 
-      it 'sorts items on test setting 1', ->
+      # it sorts items by select event
+      dispatchCommand('tab-history-mrx:back')
+      dispatchCommand('tab-history-mrx:select')
+      expect(internalListTitles()).toBe 'E3,E4,E2,E1'
 
+      # it sorts items by change event
+      activeItem().setText('abcdefg')
+      dispatchCommand('tab-history-mrx:back')
+      dispatchCommand('tab-history-mrx:back')
+      dispatchCommand('tab-history-mrx:select')
+      expect(internalListTitles()).toBe 'E3,E2,E4,E1'
+      activeItem().setText('abcdefg')
+      expect(internalListTitles()).toBe 'E2,E3,E4,E1'
 
-      it 'sorts items on test setting 2', ->
+      # it sorts items by cursor move event
+      dispatchCommand('tab-history-mrx:back')
+      dispatchCommand('tab-history-mrx:select')
+      activeItem().moveLeft(1)
+      expect(internalListTitles()).toBe 'E3,E2,E4,E1'
 
-      it 'sorts items on test setting 3', ->
+      # priority of events
+      dispatchCommand('tab-history-mrx:back')
+      dispatchCommand('tab-history-mrx:back')
+      dispatchCommand('tab-history-mrx:back')
+      dispatchCommand('tab-history-mrx:select')
+      expect(internalListTitles()).toBe 'E3,E2,E1,E4'
 
-    describe 'timeoutMinutes', ->
-      it 'ignores timestamp of action older then timeoutMinutes', ->
+      # it sorts items by save event
+      dispatchCommand('tab-history-mrx:forward')
+      dispatchCommand('tab-history-mrx:select')
+      activeItem().saveAs('/tmp/tab-history-mrx.spec/E2')
+      expect(internalListTitles()).toBe 'E2,E3,E1,E4'
 
-    describe 'limitItems', ->
-      it 'automatically close and dispose item not to exceed limit of items in the list', ->
+      dispatchCommand('tab-history-mrx:back')
+      dispatchCommand('tab-history-mrx:back')
+      dispatchCommand('tab-history-mrx:select')
+      activeItem().setText('abcdefg')
+      expect(internalListTitles()).toBe 'E2,E1,E3,E4'
 
-      it 'does not close item on bottom but modified', ->
+  describe 'Settings: timeoutMinutes', ->
+    it 'ignores timestamp of action older then timeoutMinutes', ->
+      jasmine.useRealClock()
+      expect(internalListTitles()).toBe 'E4,E3,E2,E1'
 
-      it 'does not close item on bottom but active currently', ->
+      activeItem().setText('abcdefg')
+      dispatchCommand('tab-history-mrx:back')
+      dispatchCommand('tab-history-mrx:select')
+      activeItem().setText('abcdefg')
+      expect(internalListTitles()).toBe 'E3,E4,E2,E1'
 
-  describe 'Facade testable', ->
-    describe 'sub-title', ->
-      it 'generates sub-title by last difference of path fragments', ->
+      atom.config.set('tab-history-mrx.timeoutMinutes', (1.0 / 60.0) * 0.5)
 
-      it 'gives up making sub-title of item which can not getPath', ->
+      waitsForPromise ->
+        new Promise (resolve) ->
+          setTimeout resolve, 1000
+        .then ->
+          dispatchCommand('tab-history-mrx:forward')
+          dispatchCommand('tab-history-mrx:select')
+          expect(internalListTitles()).toBe 'E1,E3,E4,E2'
 
-    describe 'formating time elapsed', ->
-      it 'shows secs if elapsed time is less than a min', ->
+    it 'totaly ignores timestamp of "ignore rank" action (the worst number in rank list in settings)'
 
-      it 'shows mins if elapsed time is less than an hour', ->
+    it 'where ranks no "ignore rank", minimum rank action is never timed out'
+    
 
-      it 'shows hours if elapsed time is much than an hour', ->
+  describe 'Settings: limitItems', ->
+    it 'automatically close and dispose item not to exceed limit of items in the list', ->
+
+    it 'does not close item on bottom but modified', ->
+
+    it 'does not close item on bottom but active currently', ->
+
+  describe 'Facade: sub-title', ->
+    it 'generates sub-title by last difference of path fragments', ->
+
+    it 'gives up making sub-title of item which can not getPath', ->
+
+  describe 'Facade: formating time elapsed', ->
+    it 'shows secs if elapsed time is less than a min', ->
+
+    it 'shows mins if elapsed time is less than an hour', ->
+
+    it 'shows hours if elapsed time is much than an hour', ->
 
 ###
   describe 'Reorder list', ->

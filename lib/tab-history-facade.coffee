@@ -43,16 +43,16 @@ class TabHistoryFacade
       span.setAttribute('data-name', item.getTitle())
       span.innerText = item.getTitle()
 
-      info = history.restInfoOfItem item
+      info = history.extraInfoOfItem item
 
       identElm = element.children[1].children[1]
       identElm.innerText = if 'ident' of info then info.ident else ''
 
       stampElm = element.children[1].children[0]
       stampElm.innerText = ''
-      if 'sortbase' of info
-        stampElm.setAttribute('name', info.sortbase)
-        stampElm.innerText = @formatDelayTime(@displayTime - info[info.sortbase])
+      if 'sortFactor' of info
+        stampElm.setAttribute('name', info.sortFactor)
+        stampElm.innerText = @formatDelayTime(@displayTime - info[info.sortFactor])
 
   formatDelayTime: (mills) ->
     hours = Math.floor(mills / (1000 * 60 * 60))

@@ -34,9 +34,9 @@ module.exports =
       enum: [1, 2, 3, 4, 5]
     timeoutMinutes:
       order: 10
-      type: 'integer'
+      type: 'number'
       default: 180
-      title: 'Expiration minutes of events'
+      title: 'Expiration of events'
       description: 'An event past longer than this is ignored and the item is sorted by lesser rank events.'
     limitItems:
       order: 20

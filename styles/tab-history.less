@@ -32,6 +32,7 @@ atom-panel.modal.tab-history-mrx-facade-panel {
   transition: transform ease-out 0.2s, margin ease-out 0.2s, color 0.1s;
   padding: 0px 0px 0px 10px;
   margin: 0px;
+  transform-origin: 33px 50%;
 
   .icon-file-text {
     text-shadow: 0px 0px 5px @pane-item-background-color;
@@ -41,6 +42,7 @@ atom-panel.modal.tab-history-mrx-facade-panel {
 
     &::before {
       transform: scale(2.4, 2.4) translateY(-1px);
+      transform-origin: unset;
       margin-right: 12px;
       margin-left: 13px;
     }
@@ -48,14 +50,14 @@ atom-panel.modal.tab-history-mrx-facade-panel {
 
 
   &.active {
-    transform: scale(1.5, 1.5) translateX(55px);
+    transform: scale(1.5, 1.5);
     color: @text-color;
     margin: 14px 0px;
 
     &.hiding {
       transition: opacity ease-in 0.4s, transform ease-in 0.4s;
       opacity: 0;
-      transform: scale(1.57, 1.57) translateX(50px);
+      transform: scale(1.57, 1.57);
     }
   }
 
