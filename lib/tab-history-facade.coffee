@@ -45,8 +45,8 @@ class TabHistoryFacade
 
       info = history.extraInfoOfItem item
 
-      identElm = element.children[1].children[1]
-      identElm.innerText = if 'ident' of info then info.ident else ''
+      subTitleElm = element.children[1].children[1]
+      subTitleElm.innerText = if 'subTitle' of info then info.subTitle else ''
 
       stampElm = element.children[1].children[0]
       stampElm.innerText = ''

@@ -9,14 +9,16 @@ class HistoryBuffer
     @stamp headItem, 'select'
 
   pushItem: (item) ->
-    obj = {item: item, ident: ''}
+    obj = {item: item, subTitle: ''}
     obj[name] = 0 for name in @stampNames
     @stamps.push obj
-    @setIdent(obj)
+    @setSubTitle(obj)
+    @sortedItemListCache = null
 
   removeItem: (item) ->
     index = @stamps.findIndex (element) -> element.item is item
     @stamps.splice index, 1 if index >= 0
+    @sortedItemListCache = null
 
   stamp: (item, stampOn) ->
     index = @stamps.findIndex (element) -> element.item is item
@@ -56,7 +58,13 @@ class HistoryBuffer
       .map (element) ->
         element.item
 
-  setIdent: (newItem) ->
+  setSubTitle: (newItem) ->
+    for i in [0...@stamps.length]
+      matched = @stamps[i].item.getLongTitle().match(/\u2014 (.*)$/)
+      @stamps[i].subTitle = matched[1] if matched
+    return
+
+    # original implementation currently abandoned
     return if typeof newItem.item.getPath is 'undefined'
     # additional string for items of same titles
     for i in [0...@stamps.length]
@@ -67,9 +75,9 @@ class HistoryBuffer
         if path[0] != path[1]
           pathElms = path.map (e) -> e.split('/')
           if pathElms[0].length >= 2 and pathElms[1].length >= 2
-            ident = ['', '']
+            subTitles = ['', '']
             for pathIndex in [1..Math.min(pathElms[0].length, pathElms[1].length)]
-              ident = pathElms.map (e) -> e[e.length - pathIndex]
-              break if ident[0] != ident[1]
-            @stamps[i].ident = ident[0]
-            newItem.ident = ident[1]
+              subTitles = pathElms.map (e) -> e[e.length - pathIndex]
+              break if subTitles[0] != subTitles[1]
+            @stamps[i].subTitle = subTitles[0]
+            newItem.subTitle = subTitles[1]
