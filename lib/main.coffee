@@ -8,36 +8,36 @@ module.exports =
       order: 1
       type: 'integer'
       default: 4
-      title: 'Sorting priority rank for selection of tab item'
-      description: ''
+      title: 'Sort Rank : Select'
+      description: 'Sorting priority rank of activation (focusing) of a tab item'
       enum: [1, 2, 3, 4, 5]
     sortRank_cursor:
       order: 2
       type: 'integer'
       default: 3
-      title: 'Sorting priority rank for cursor moving in an editor'
-      description: ''
+      title: 'Sort Rank : Cursor Move'
+      description: 'Sorting priority rank of cursor move on an editor'
       enum: [1, 2, 3, 4, 5]
     sortRank_change:
       order: 3
       type: 'integer'
       default: 2
-      title: 'Sorting priority rank for change of content'
-      description: ''
+      title: 'Sort Rank : Change'
+      description: 'Sorting priority rank of content change of an editor'
       enum: [1, 2, 3, 4, 5]
     sortRank_save:
       order: 4
       type: 'integer'
       default: 1
-      title: 'Sorting priority rank for save of content'
-      description: ''
+      title: 'Sort Rank : Save'
+      description: 'Sorting priority rank of save of content of a tab item'
       enum: [1, 2, 3, 4, 5]
     timeoutMinutes:
       order: 10
       type: 'number'
       default: 180
-      title: 'Expiration of events'
-      description: 'An event past longer than this is ignored and the item is sorted by lesser rank events.'
+      title: 'Expiration of events (minutes)'
+      description: 'An event past longer than this is ignored and the item is sorted by lesser rank events. '
     limitItems:
       order: 20
       type: 'integer'

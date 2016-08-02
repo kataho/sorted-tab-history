@@ -2,25 +2,10 @@
   "name": "tab-history-mrx",
   "main": "./lib/main",
   "version": "1.0.0",
-  "description": "Yet another tab item manager which sorts items by most recently anything.",
+  "description": "Yet another tab manager which orders tabs in elapsed time from anything done most recently.",
   "repository": "https://github.com/kataho/tab-history-mrx",
   "license": "MIT",
   "engines": {
     "atom": ">=1.7.3"
-  },
-  "coffeelintConfig": {
-    "max_line_length": {
-      "value": 120
-    },
-    "colon_assignment_spacing": {
-      "spacing" : {
-        "right": 1,
-        "left": 0
-      },
-      "level": "error"
-    },
-    "space_operators": {
-      "level": "error"
-    }
   }
 }

@@ -60,7 +60,10 @@ class HistoryBuffer
 
   setSubTitle: (newItem) ->
     for i in [0...@stamps.length]
-      matched = @stamps[i].item.getLongTitle().match(/\u2014 (.*)$/)
+      matched = null
+
+      matched = if 'getLongTitle' of @stamps[i].item then @stamps[i].item.getLongTitle().match(/\u2014 (.*)$/)
+      #else null
       @stamps[i].subTitle = matched[1] if matched
     return
 
