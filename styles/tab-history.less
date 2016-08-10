@@ -1,6 +1,6 @@
 @import "ui-variables";
 
-atom-panel.modal.tab-history-mrx-facade-panel {
+atom-panel.modal.sorted-tab-history-facade-panel {
   height: 100%;
   width: 100%;
   left: 0;
@@ -21,12 +21,12 @@ atom-panel.modal.tab-history-mrx-facade-panel {
   }
 }
 
-.tab-history-mrx-facade {
+.sorted-tab-history-facade {
   list-style: none;
   padding: 0;
 }
 
-.tab-history-mrx-facade li {
+.sorted-tab-history-facade li {
   //background: radial-gradient(fade(@pane-item-background-color, 90%) 35%, fade(@pane-item-background-color, 0%) 70%);
   background: linear-gradient(to right, fade(@pane-item-background-color, 0%) 0%, fade(@pane-item-background-color, 90%) 10%, fade(@pane-item-background-color, 80%) 50%, fade(@pane-item-background-color, 0%) 100%);
   transition: transform ease-out 0.2s, margin ease-out 0.2s, color 0.1s;
@@ -79,6 +79,7 @@ atom-panel.modal.tab-history-mrx-facade-panel {
   }
 
   .stamp-delay {
+    font: Arial;
     font-weight: bold;
     min-width: 35px;
     min-height: 13px;
@@ -86,10 +87,13 @@ atom-panel.modal.tab-history-mrx-facade-panel {
     &[name=select] {
       color:green;
     }
-    &[name=change] {
-      color:blue;
+    &[name=select_ext] {
+      color:green;
     }
     &[name=cursor] {
+      color:blue;
+    }
+    &[name=change] {
       color:orange;
     }
     &[name=save] {

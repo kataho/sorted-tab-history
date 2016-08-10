@@ -1,12 +1,12 @@
 module.exports =
 class HistoryBuffer
   constructor: (baseArray, headItem) ->
-    @stampNames = ['select', 'cursor', 'change', 'save']
-    @configPrefix = 'tab-history-mrx.sortRank_'
+    @stampNames = ['select', 'select_ext', 'cursor', 'change', 'save']
+    @configPrefix = 'sorted-tab-history.sortRank_'
     @stamps = []
     @sortedItemListCache = null
     @pushItem item for item in baseArray
-    @stamp headItem, 'select'
+    @stamp headItem, 'select_ext'
 
   pushItem: (item) ->
     obj = {item: item, subTitle: ''}
@@ -33,26 +33,36 @@ class HistoryBuffer
 
   sortedItemList: ->
     return @sortedItemListCache if @sortedItemListCache isnt null
-    timeoutTimeEnable = Date.now() - atom.config.get('tab-history-mrx.timeoutMinutes') * 60 * 1000
+    timeoutTimeEnable = Date.now() - atom.config.get('sorted-tab-history.timeoutMinutes') * 60 * 1000
     configPrefix = @configPrefix
     sortRanks = @stampNames
       .map (name) ->
         {name: name, rank: atom.config.get(configPrefix + name)}
       .sort (a, b) ->
         a.rank - b.rank
-    ignoreRank = @stampNames.length + 1 # largest value of rank in settings selection is ignored
+      .reduce ((merged, elm, index) ->
+        if index > 0 && merged[merged.length - 1].rank == elm.rank
+          merged[merged.length - 1].names.push elm.name
+        else
+          merged.push {names: [elm.name], rank: elm.rank}
+        merged
+      ), []
+
+    ignoreRank = @stampNames.length + 1 # the largest in pull down list of sort rank is totally ignored
     sortRanks.pop() while sortRanks.length > 0 and sortRanks[sortRanks.length - 1].rank is ignoreRank
     minRank = sortRanks[sortRanks.length - 1].rank # worst ranked event is never timed out
     sortRanks.forEach (element) -> element.timeoutTime = if element.rank == minRank then 0 else timeoutTimeEnable
     @stamps.forEach (element) -> delete element.sortFactor
     @sortedItemListCache = @stamps
       .sort (a, b) ->
-        for {name, rank, timeoutTime} in sortRanks
-          aval = Math.max(0, a[name] - timeoutTime)
-          bval = Math.max(0, b[name] - timeoutTime)
+        for {names, rank, timeoutTime} in sortRanks
+          aname = names.reduce (maxname, name) -> if a[maxname] < a[name] then name else maxname
+          bname = names.reduce (maxname, name) -> if b[maxname] < b[name] then name else maxname
+          aval = Math.max(0, a[aname] - timeoutTime)
+          bval = Math.max(0, b[bname] - timeoutTime)
           if aval != bval
-            a.sortFactor = name if aval > 0
-            b.sortFactor = name if bval > 0
+            a.sortFactor = aname if aval > 0
+            b.sortFactor = bname if bval > 0
             return bval - aval
         0
       .map (element) ->
@@ -60,14 +70,11 @@ class HistoryBuffer
 
   setSubTitle: (newItem) ->
     for i in [0...@stamps.length]
-      matched = null
-
-      matched = if 'getLongTitle' of @stamps[i].item then @stamps[i].item.getLongTitle().match(/\u2014 (.*)$/)
-      #else null
-      @stamps[i].subTitle = matched[1] if matched
+      if (matched = if 'getLongTitle' of @stamps[i].item then @stamps[i].item.getLongTitle().match(/\u2014 (.*)$/))
+        @stamps[i].subTitle = matched[1]
     return
 
-    # original implementation currently abandoned
+    # custom implementation which currently abandoned
     return if typeof newItem.item.getPath is 'undefined'
     # additional string for items of same titles
     for i in [0...@stamps.length]

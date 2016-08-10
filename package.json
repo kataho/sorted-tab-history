@@ -1,8 +1,8 @@
 {
-  "name": "tab-history-mrx",
+  "name": "sorted-tab-history",
   "main": "./lib/main",
   "version": "1.0.0",
-  "description": "Yet another tab manager which orders tabs in elapsed time from anything done most recently.",
+  "description": "Yet another tab item manager which sorts tabs with elapsed time from various things done recently.",
   "repository": "https://github.com/kataho/tab-history-mrx",
   "license": "MIT",
   "engines": {

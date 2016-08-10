@@ -5,46 +5,59 @@ TabHistoryManager = require './tab-history-manager'
 module.exports =
   config:
     sortRank_select:
-      order: 1
-      type: 'integer'
-      default: 4
-      title: 'Sort Rank : Select'
-      description: 'Sorting priority rank of activation (focusing) of a tab item'
-      enum: [1, 2, 3, 4, 5]
-    sortRank_cursor:
       order: 2
       type: 'integer'
-      default: 3
-      title: 'Sort Rank : Cursor Move'
-      description: 'Sorting priority rank of cursor move on an editor'
-      enum: [1, 2, 3, 4, 5]
-    sortRank_change:
+      default: 1
+      title: 'Sort Rank : Select with The List'
+      description: 'Sorting priority rank of activation (focusing) of a tab item with the package\'s popup list.'
+      enum: [1, 2, 3, 4, 5, 6]
+    sortRank_select_ext:
+      order: 1
+      type: 'integer'
+      default: 1
+      title: 'Sort Rank : Select with Other Feature'
+      description: 'Sorting priority rank of activation (focusing) of a tab item
+                    with an other tab item selecting feature. (ex. tabs, tree-view)'
+      enum: [1, 2, 3, 4, 5, 6]
+    sortRank_cursor:
       order: 3
+      type: 'integer'
+      default: 6
+      title: 'Sort Rank : Cursor Move'
+      description: 'Sorting priority rank of cursor move on an editor.'
+      enum: [1, 2, 3, 4, 5, 6]
+    sortRank_change:
+      order: 4
       type: 'integer'
       default: 2
       title: 'Sort Rank : Change'
-      description: 'Sorting priority rank of content change of an editor'
-      enum: [1, 2, 3, 4, 5]
+      description: 'Sorting priority rank of content change of an editor.'
+      enum: [1, 2, 3, 4, 5, 6]
     sortRank_save:
-      order: 4
+      order: 5
       type: 'integer'
-      default: 1
+      default: 6
       title: 'Sort Rank : Save'
-      description: 'Sorting priority rank of save of content of a tab item'
-      enum: [1, 2, 3, 4, 5]
+      description: 'Sorting priority rank of save of content of a tab item.'
+      enum: [1, 2, 3, 4, 5, 6]
     timeoutMinutes:
       order: 10
       type: 'number'
-      default: 180
-      title: 'Expiration of events (minutes)'
-      description: 'An event past longer than this is ignored and the item is sorted by lesser rank events. '
+      default: 5
+      title: 'Expiration of Events (in minutes)'
+      description: 'An event past longer than this is ignored. It leads the item being sorted by lesser ranked event. '
     limitItems:
       order: 20
       type: 'integer'
-      default: 0
-      title: 'Maximum tabs in a pane'
-      description: 'Keep number of tabs by closing last tabs of the sort result.
-                    (0 for no limit)'
+      default: 10
+      title: 'Maximum Tabs'
+      description: 'Keeps number of tabs by closing last tabs of the sorted list. (0 for no limit)'
+    circularList:
+      order: 30
+      type: 'boolean'
+      default: false
+      title: 'Circular List'
+      description: 'Connects head and tail of the list.'
 
   activate: (state) ->
     @disposable = new CompositeDisposable
@@ -70,16 +83,16 @@ module.exports =
       @keymapTimeout = setTimeout (=> @managers[getActivePaneId()]?.reset()), atom.keymaps.getPartialMatchTimeout()
 
     @disposable.add atom.commands.add 'atom-workspace',
-      'tab-history-mrx:forward': =>
+      'sorted-tab-history:forward': =>
         resetAbortTimer()
         @managers[getActivePaneId()]?.navigate(-1)
-      'tab-history-mrx:back': =>
+      'sorted-tab-history:back': =>
         resetAbortTimer()
         @managers[getActivePaneId()]?.navigate(1)
-      'tab-history-mrx:top': =>
+      'sorted-tab-history:top': =>
         resetAbortTimer()
         @managers[getActivePaneId()]?.navigateTop()
-      'tab-history-mrx:select': =>
+      'sorted-tab-history:select': =>
         clearTimeout @keymapTimeout
         @managers[getActivePaneId()]?.select()
 

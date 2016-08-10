@@ -1,16 +1,16 @@
-# Tab History Ordered by X
+# Sorted Tab History
 
 ![travis-ci](https://travis-ci.org/kataho/tab-history-mrx.svg?branch=master)
 
-Yet another tab manager which orders tabs in elapsed time from various thing done most recently.
+Yet another tab item manager which sorts tabs with elapsed time from various things done recently.
 
 This Atom package provides a list of tabs in each pane which is ordered by elapsed time from various user actions
 (save, modification, cursor move and tab activation for now).
 Of course also provides commands for keymap to navigate among the list.
 
-Many editors have back/forward navigation shortcut, besides with a small difference between
-way of ordering items. It seems no ideal one in this world.
-Finding the best of your own is the main point of this project.
+Many editors have back/forward navigation shortcut, meanwhile, there is a small difference between
+way of ordering items. It represents no ideal one in this world.
+Finding the best of your own is the main point of this package.
 
 < picture here >
 
@@ -50,9 +50,22 @@ It leads a lower rank action to be picked to calculate the order of the tab in t
 
 Number of tabs we attempt to keep in a pane. a bottom item in the history list is used as a candidate to be closed in exchange for an opening tab.
 
-## Sample Configuration
+## Setting Samples
 
-#### Standard - Most Recently Activated
+#### Most Recently Activated
+
+The List of recently used items, very common rule of sorting.
 
     SortRank:Select = 1
     SortRank:Cursor = 5
+    SortRank:Change = 5
+    SortRank:Save = 5
+
+#### Most Recently Cursor Move
+
+Cursor move pops item to the head of the list.
+
+    SortRank:Select = 5
+    SortRank:Cursor = 1
+    SortRank:Change = 5
+    SortRank:Save = 5

@@ -6,8 +6,12 @@ class TabHistoryFacade
     @disposable = new CompositeDisposable
 
     @modalItem = document.createElement('ol')
-    @modalItem.classList.add('tab-history-mrx-facade')
-    @modal = atom.workspace.addModalPanel {item: @modalItem, visible: false, className: 'tab-history-mrx-facade-panel'}
+    @modalItem.classList.add('sorted-tab-history-facade')
+    @modal = atom.workspace.addModalPanel {
+      item: @modalItem,
+      visible: false,
+      className: 'sorted-tab-history-facade-panel'
+    }
     @displayTime = 0
 
   renderHistory: (history, activeItem) ->

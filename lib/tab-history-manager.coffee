@@ -12,7 +12,7 @@ class TabHistoryManager
 
     @disposable.add pane.onDidAddItem ({item}) =>
       @history.pushItem item
-      @forgetOldItems limit, item if (limit = atom.config.get 'tab-history-mrx.limitItems') > 0
+      @forgetOldItems limit, item if (limit = atom.config.get 'sorted-tab-history.limitItems') > 0
 
     @disposable.add pane.onWillRemoveItem ({item}) =>
       @history.removeItem item
@@ -32,7 +32,7 @@ class TabHistoryManager
       if @navigating
         @emitter.emit 'on-navigate', this
       else
-        @history.stamp item, 'select'
+        @history.stamp item, 'select_ext'
 
   _destroyStep: (limit, keepItem) ->
     list = @history.sortedItemList()
@@ -51,7 +51,11 @@ class TabHistoryManager
     @navigating = true
     list = @history.sortedItemList()
     index = list.indexOf(@pane.getActiveItem())
-    @pane.activateItem list[(index + stride + list.length) % list.length]
+    if atom.config.get 'sorted-tab-history.circularList'
+      index = (index + stride + list.length) % list.length
+    else
+      index = Math.max(0, Math.min(list.length - 1, index + stride))
+    @pane.activateItem list[index]
 
   navigateTop: ->
     @navigating = true
