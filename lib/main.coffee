@@ -8,38 +8,38 @@ module.exports =
       order: 2
       type: 'integer'
       default: 1
-      title: 'Sort Rank : Select with The List'
+      title: 'Sort Rank : Internal Select'
       description: 'Sorting priority rank of activation (focusing) of a tab item with the package\'s popup list.'
-      enum: [1, 2, 3, 4, 5, 6]
+      enum: [1, 2, 3, 4, 5, -1]
     sortRank_select_ext:
       order: 1
       type: 'integer'
       default: 1
-      title: 'Sort Rank : Select with Other Feature'
+      title: 'Sort Rank : External Select'
       description: 'Sorting priority rank of activation (focusing) of a tab item
-                    with an other tab item selecting feature. (ex. tabs, tree-view)'
-      enum: [1, 2, 3, 4, 5, 6]
+                    with an other tab item selecting feature. (ex. by clicking tabs, tree-view items)'
+      enum: [1, 2, 3, 4, 5, -1]
     sortRank_cursor:
       order: 3
       type: 'integer'
       default: 6
       title: 'Sort Rank : Cursor Move'
       description: 'Sorting priority rank of cursor move on an editor.'
-      enum: [1, 2, 3, 4, 5, 6]
+      enum: [1, 2, 3, 4, 5, -1]
     sortRank_change:
       order: 4
       type: 'integer'
       default: 2
       title: 'Sort Rank : Change'
       description: 'Sorting priority rank of content change of an editor.'
-      enum: [1, 2, 3, 4, 5, 6]
+      enum: [1, 2, 3, 4, 5, -1]
     sortRank_save:
       order: 5
       type: 'integer'
       default: 6
       title: 'Sort Rank : Save'
       description: 'Sorting priority rank of save of content of a tab item.'
-      enum: [1, 2, 3, 4, 5, 6]
+      enum: [1, 2, 3, 4, 5, -1]
     timeoutMinutes:
       order: 10
       type: 'number'

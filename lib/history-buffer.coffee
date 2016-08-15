@@ -48,8 +48,7 @@ class HistoryBuffer
         merged
       ), []
 
-    ignoreRank = @stampNames.length + 1 # the largest in pull down list of sort rank is totally ignored
-    sortRanks.pop() while sortRanks.length > 0 and sortRanks[sortRanks.length - 1].rank is ignoreRank
+    sortRanks.shift() while sortRanks.length > 0 and sortRanks[0].rank < 0 # negative rank no. is totally ignored
     minRank = sortRanks[sortRanks.length - 1].rank # worst ranked event is never timed out
     sortRanks.forEach (element) -> element.timeoutTime = if element.rank == minRank then 0 else timeoutTimeEnable
     @stamps.forEach (element) -> delete element.sortFactor

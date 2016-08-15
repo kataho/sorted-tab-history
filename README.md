@@ -8,7 +8,7 @@ This Atom package provides a list of tabs in each pane which is ordered by elaps
 (save, modification, cursor move and tab activation for now).
 Of course also provides commands for keymap to navigate among the list.
 
-Many editors have back/forward navigation shortcut, meanwhile, there is a small difference between
+Many editors have back/forward navigation feature, meanwhile, there is a small difference between
 way of ordering items. It represents no ideal one in this world.
 Finding the best of your own is the main point of this package.
 
@@ -29,9 +29,11 @@ Finding the best of your own is the main point of this package.
 The history is sorted by multiple factors. First, tab items are sorted with time from last action of the best rank,
 and on a subset of items with too old to compare, another sort is applied with time from last action of second best rank, and so forth.
 
-\* An action labelled as the worst rank in pulldown list is handled as disabled. Time from the action is totally ignored.
+\* The rank -1 means disabled. The action is ignored.
 
-**Sort Rank : Select** - Sorting priority rank of activation (focusing) of a tab item
+**Sort Rank : Internal Select** - Sorting priority rank of activation of a tab item (by this package feature)
+
+**Sort Rank : External Select** - Sorting priority rank of activation of a tab item (by other tab item selecting feature)
 
 **Sort Rank : Cursor Move** - Sorting priority rank of cursor move on an editor
 
@@ -42,30 +44,39 @@ and on a subset of items with too old to compare, another sort is applied with t
 #### Expiration of Event History
 
 Integer of minutes of an action expires. An expired action is handled as never occurred.
-It leads a lower rank action to be picked to calculate the order of the tab in the history.
+It causes a next lower rank action to be picked to decide an order of the tab item.
 
-\* Among enabled ranks, The action labelled as the worst never expires.
+\* An action labelled as the lowest rank among enabled ranks never expires.
 
 #### Tab Auto Closing
 
-Number of tabs we attempt to keep in a pane. a bottom item in the history list is used as a candidate to be closed in exchange for an opening tab.
+Number of tabs we attempt to keep in a pane. a bottom item in the history list is used as a candidate to be closed in exchange for an item being added.
 
 ## Setting Samples
 
 #### Most Recently Activated
 
-The List of recently used items, very common rule of sorting.
+The List of recently used items; very common rule of sorting.
 
-    SortRank:Select = 1
-    SortRank:Cursor = 5
-    SortRank:Change = 5
-    SortRank:Save = 5
+    SortRank:InternalSelect = -1
+    SortRank:ExternalSelect = 1
+    SortRank:Cursor = -1
+    SortRank:Change = -1
+    SortRank:Save = -1
 
-#### Most Recently Cursor Move
+Selecting from this activation history also changes history.
 
-Cursor move pops item to the head of the list.
+    SortRank:InternalSelect = 1
+    SortRank:ExternalSelect = 1
+    SortRank:Cursor = -1
+    SortRank:Change = -1
+    SortRank:Save = -1
 
-    SortRank:Select = 5
-    SortRank:Cursor = 1
-    SortRank:Change = 5
-    SortRank:Save = 5
+Preventing changed item to be auto closed.
+
+    SortRank:InternalSelect = 1
+    SortRank:ExternalSelect = 1
+    SortRank:Cursor = -1
+    SortRank:Change = 2
+    SortRank:Save = -1
+    ExpirationOfEvents = 5

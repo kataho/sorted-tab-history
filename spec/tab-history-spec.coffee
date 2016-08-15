@@ -10,7 +10,7 @@ describe 'SortedTabHistory', ->
   historyManager = null
   mainModule = null
   workspaceElement = null
-  RANK_IGNORE = 6
+  RANK_IGNORE = -1
   TMP_DIR = '/tmp/sorted-tab-history.spec/'
 
   beforeEach ->
@@ -125,7 +125,7 @@ describe 'SortedTabHistory', ->
       activeItem().setText('abcdefg')
       expect(internalListTitles()).toBe 'E2,E1,E3,E4'
 
-  describe 'Settings: sorting items (sharing same rank among items', ->
+  describe 'Settings: sorting items (multiple events share a rank)', ->
     it 'compares different timestamp value as one sorting parameter', ->
       atom.config.set('sorted-tab-history.sortRank_select', 5)
       atom.config.set('sorted-tab-history.sortRank_select_ext', 5)
@@ -195,7 +195,7 @@ describe 'SortedTabHistory', ->
           expect(internalListTitles()).toBe 'E3,E1,E4,E2'
 
   describe 'Settings: limitItems', ->
-    it 'automatically close and dispose items for avoiding to exceed limit of items in the list', ->
+    it 'closes and disposes items on tail to keep count of items in the list', ->
       waitsForPromise ->
         atom.workspace.open('E5').then ->
           atom.workspace.open('E6').then ->
@@ -205,7 +205,7 @@ describe 'SortedTabHistory', ->
               advanceClock(1000)
               expect(internalListTitles()).toBe 'E7,E6,E5,E4,E3'
 
-    it 'does not close items on bottom and modified', ->
+    it 'does not close items on tail but modified', ->
       atom.config.set('sorted-tab-history.sortRank_change', RANK_IGNORE)
       atom.config.set('sorted-tab-history.sortRank_cursor', RANK_IGNORE)
       waitsForPromise ->
@@ -217,7 +217,7 @@ describe 'SortedTabHistory', ->
             advanceClock(1000)
             expect(internalListTitles()).toBe 'E6,E5,E4,E3,E1'
 
-    it 'does not close items on bottom and currently opened', ->
+    it 'does not close items on tail but currently opened', ->
       atom.config.set('sorted-tab-history.sortRank_select_ext', RANK_IGNORE)
       waitsForPromise ->
         atom.workspace.open('E5').then ->
@@ -228,7 +228,7 @@ describe 'SortedTabHistory', ->
             expect(internalListTitles()).toMatch '.*,E6$'
 
   describe 'Settings: circularList', ->
-    it 'prevents active item change on forwarding from head and backwarding from tail. [coverage case false]', ->
+    it 'prevents active item change on forwarding from head and backwarding from tail. [coverage false case]', ->
       atom.config.set('sorted-tab-history.circularList', false)
       atom.config.set('sorted-tab-history.sortRank_select_ext', 4)
       atom.config.set('sorted-tab-history.sortRank_select', RANK_IGNORE)
