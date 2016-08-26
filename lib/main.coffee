@@ -22,7 +22,7 @@ module.exports =
     sortRank_cursor:
       order: 3
       type: 'integer'
-      default: 6
+      default: -1
       title: 'Sort Rank : Cursor Move'
       description: 'Sorting priority rank of cursor move on an editor.'
       enum: [1, 2, 3, 4, 5, -1]
@@ -36,7 +36,7 @@ module.exports =
     sortRank_save:
       order: 5
       type: 'integer'
-      default: 6
+      default: -1
       title: 'Sort Rank : Save'
       description: 'Sorting priority rank of save of content of a tab item.'
       enum: [1, 2, 3, 4, 5, -1]

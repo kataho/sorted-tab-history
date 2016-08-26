@@ -6,7 +6,8 @@ atom-panel.modal.sorted-tab-history-facade-panel {
   left: 0;
   padding: 0;
   border: 0;
-  margin: 0;
+  margin: auto;
+  position: relative;
 
   background-color: transparent;
   box-shadow: none;
@@ -17,6 +18,9 @@ atom-panel.modal.sorted-tab-history-facade-panel {
   align-items: center;
 
   &::before {
+    background-color: transparent;
+  }
+  &::after {
     background-color: transparent;
   }
 }
