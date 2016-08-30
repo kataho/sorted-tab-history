@@ -12,6 +12,7 @@ class TabHistoryManager
 
     @disposable.add pane.onDidAddItem ({item}) =>
       @history.pushItem item
+      @history.stamp item, 'open'
       @forgetOldItems limit, item if (limit = atom.config.get 'sorted-tab-history.limitItems') > 0
 
     @disposable.add pane.onWillRemoveItem ({item}) =>

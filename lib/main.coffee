@@ -5,41 +5,48 @@ TabHistoryManager = require './tab-history-manager'
 module.exports =
   config:
     sortRank_select:
-      order: 2
+      order: 1
       type: 'integer'
       default: 1
       title: 'Sort Rank : Internal Select'
       description: 'Sorting priority rank of activation (focusing) of a tab item with the package\'s popup list.'
-      enum: [1, 2, 3, 4, 5, -1]
+      enum: [1, 2, 3, 4, 5, 6, -1]
     sortRank_select_ext:
-      order: 1
+      order: 2
       type: 'integer'
       default: 1
       title: 'Sort Rank : External Select'
       description: 'Sorting priority rank of activation (focusing) of a tab item
                     with an other tab item selecting feature. (ex. by clicking tabs, tree-view items)'
-      enum: [1, 2, 3, 4, 5, -1]
-    sortRank_cursor:
+      enum: [1, 2, 3, 4, 5, 6, -1]
+    sortRank_open:
       order: 3
+      type: 'integer'
+      default: 1
+      title: 'Sort Rank : Open'
+      description: 'Sorting priority rank of opening of a new tab item'
+      enum: [1, 2, 3, 4, 5, 6, -1]
+    sortRank_cursor:
+      order: 4
       type: 'integer'
       default: -1
       title: 'Sort Rank : Cursor Move'
       description: 'Sorting priority rank of cursor move on an editor.'
-      enum: [1, 2, 3, 4, 5, -1]
+      enum: [1, 2, 3, 4, 5, 6, -1]
     sortRank_change:
-      order: 4
+      order: 5
       type: 'integer'
       default: 2
       title: 'Sort Rank : Change'
       description: 'Sorting priority rank of content change of an editor.'
-      enum: [1, 2, 3, 4, 5, -1]
+      enum: [1, 2, 3, 4, 5, 6, -1]
     sortRank_save:
-      order: 5
+      order: 6
       type: 'integer'
       default: -1
       title: 'Sort Rank : Save'
       description: 'Sorting priority rank of save of content of a tab item.'
-      enum: [1, 2, 3, 4, 5, -1]
+      enum: [1, 2, 3, 4, 5, 6, -1]
     timeoutMinutes:
       order: 10
       type: 'number'

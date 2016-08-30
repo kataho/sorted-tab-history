@@ -56,7 +56,7 @@ Number of tabs we attempt to keep in a pane. a bottom item in the history list i
 
 #### Most Recently Activated
 
-The List of recently used items; very common rule of sorting.
+The list of recently used items. Commonly been seen around.
 
     SortRank:InternalSelect = -1
     SortRank:ExternalSelect = 1
@@ -64,7 +64,7 @@ The List of recently used items; very common rule of sorting.
     SortRank:Change = -1
     SortRank:Save = -1
 
-Selecting from this activation history also changes history.
+Selecting from this list also changes the order.
 
     SortRank:InternalSelect = 1
     SortRank:ExternalSelect = 1
@@ -72,7 +72,7 @@ Selecting from this activation history also changes history.
     SortRank:Change = -1
     SortRank:Save = -1
 
-Preventing changed item to be auto closed.
+Preventing changed items to be auto closed.
 
     SortRank:InternalSelect = 1
     SortRank:ExternalSelect = 1
@@ -80,3 +80,14 @@ Preventing changed item to be auto closed.
     SortRank:Change = 2
     SortRank:Save = -1
     ExpirationOfEvents = 5
+
+#### Saved and Opened History
+
+Items saved last an hour are on upper floor and recently opened items follow.
+
+    SortRank:InternalSelect = -1
+    SortRank:ExternalSelect = 2
+    SortRank:Cursor = -1
+    SortRank:Change = -1
+    SortRank:Save = 1
+    ExpirationOfEvents = 60

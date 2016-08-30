@@ -27,6 +27,7 @@ describe 'SortedTabHistory', ->
         historyManager = mainModule.managers[atom.workspace.getActivePane().id]
 
     waitsForPromise ->
+      atom.config.set('sorted-tab-history.sortRank_open', 6)
       atom.config.set('sorted-tab-history.sortRank_select_ext', 5)
       atom.config.set('sorted-tab-history.sortRank_select', 4)
       atom.config.set('sorted-tab-history.sortRank_change', 3)
@@ -77,6 +78,8 @@ describe 'SortedTabHistory', ->
     it 'sorts with various kind of event', ->
       # initial order
       expect(internalListTitles()).toBe 'E4,E3,E2,E1'
+
+      # it sorts items by open event
 
       # it sorts items by other select feature
       activateItemWithTitle 'E2'
@@ -139,7 +142,7 @@ describe 'SortedTabHistory', ->
       expect(internalListTitles()).toBe 'E1,E3,E2,E4'
 
   describe 'Settings: timeoutMinutes', ->
-    it 'ignores timestamp of action older then timeoutMinutes', ->
+    it 'ignores timestamp of action older than timeoutMinutes', ->
       jasmine.useRealClock()
       expect(internalListTitles()).toBe 'E4,E3,E2,E1'
 
@@ -151,6 +154,7 @@ describe 'SortedTabHistory', ->
 
       atom.config.set('sorted-tab-history.timeoutMinutes', (1.0 / 60.0) * 0.5)
       atom.config.set('sorted-tab-history.sortRank_select_ext', RANK_IGNORE)
+      atom.config.set('sorted-tab-history.sortRank_open', RANK_IGNORE)
 
       waitsForPromise ->
         new Promise (resolve) ->
@@ -178,6 +182,7 @@ describe 'SortedTabHistory', ->
       expect(internalListTitles()).toBe 'E4,E3,E2,E1'
       atom.config.set('sorted-tab-history.timeoutMinutes', 0.0001)
       atom.config.set('sorted-tab-history.sortRank_select_ext', RANK_IGNORE)
+      atom.config.set('sorted-tab-history.sortRank_open', RANK_IGNORE)
 
       dispatchCommand('sorted-tab-history:back')
       dispatchCommand('sorted-tab-history:select')
@@ -219,6 +224,7 @@ describe 'SortedTabHistory', ->
 
     it 'does not close items on tail but currently opened', ->
       atom.config.set('sorted-tab-history.sortRank_select_ext', RANK_IGNORE)
+      atom.config.set('sorted-tab-history.sortRank_open', RANK_IGNORE)
       waitsForPromise ->
         atom.workspace.open('E5').then ->
           advanceClock(1000)

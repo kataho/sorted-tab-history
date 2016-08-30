@@ -1,7 +1,7 @@
 module.exports =
 class HistoryBuffer
   constructor: (baseArray, headItem) ->
-    @stampNames = ['select', 'select_ext', 'cursor', 'change', 'save']
+    @stampNames = ['select', 'select_ext', 'open', 'cursor', 'change', 'save']
     @configPrefix = 'sorted-tab-history.sortRank_'
     @stamps = []
     @sortedItemListCache = null
