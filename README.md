@@ -10,7 +10,7 @@ Of course also provides commands for keymap to navigate among the list.
 
 Many editors have back/forward navigation feature, meanwhile, there is a small difference between
 way of ordering items. It represents no ideal one in this world.
-Finding the best of your own is the main point of this package.
+To help you to find the best of your own is the main point of this package.
 
 < picture here >
 
@@ -35,6 +35,8 @@ and on a subset of items with too old to compare, another sort is applied with t
 
 **Sort Rank : External Select** - Sorting priority rank of activation of a tab item (by other tab item selecting feature)
 
+**Sort Rank : Open** - Sorting priority rank of addition of new tab item
+
 **Sort Rank : Cursor Move** - Sorting priority rank of cursor move on an editor
 
 **Sort Rank : Change** - Sorting priority rank of content change of an editor
@@ -52,7 +54,7 @@ It causes a next lower rank action to be picked to decide an order of the tab it
 
 Number of tabs we attempt to keep in a pane. a bottom item in the history list is used as a candidate to be closed in exchange for an item being added.
 
-## Setting Samples
+## Setting Examples
 
 #### Most Recently Activated
 
@@ -60,33 +62,61 @@ The list of recently used items. Commonly been seen around.
 
     SortRank:InternalSelect = -1
     SortRank:ExternalSelect = 1
+    SortRank:Open = -1
     SortRank:Cursor = -1
     SortRank:Change = -1
     SortRank:Save = -1
 
-Selecting from this list also changes the order.
+Plus, selecting from this list also changes the order.
 
     SortRank:InternalSelect = 1
     SortRank:ExternalSelect = 1
+    SortRank:Open = -1
     SortRank:Cursor = -1
     SortRank:Change = -1
     SortRank:Save = -1
 
-Preventing changed items to be auto closed.
+Plus, preventing changed items never be closed. I am using this.
 
     SortRank:InternalSelect = 1
     SortRank:ExternalSelect = 1
+    SortRank:Open = -1
     SortRank:Cursor = -1
     SortRank:Change = 2
     SortRank:Save = -1
     ExpirationOfEvents = 5
 
-#### Saved and Opened History
+### Cursor Move History
 
-Items saved last an hour are on upper floor and recently opened items follow.
+Cursor move rather than item selection.
 
     SortRank:InternalSelect = -1
-    SortRank:ExternalSelect = 2
+    SortRank:ExternalSelect = -1
+    SortRank:Open = -1
+    SortRank:Cursor = 1
+    SortRank:Change = 2
+    SortRank:Save = -1
+    ExpirationOfEvents = 5
+
+### Pure Save History
+
+Can control the order all by yourself by turning auto saving off.
+
+    SortRank:InternalSelect = -1
+    SortRank:ExternalSelect = -1
+    SortRank:Open = -1
+    SortRank:Cursor = -1
+    SortRank:Change = -1
+    SortRank:Save = 1
+    ExpirationOfEvents = 9999
+
+#### Saved and Opened History
+
+Items saved in last an hour are on upper list and recently opened items follow.
+
+    SortRank:InternalSelect = -1
+    SortRank:ExternalSelect = -1
+    SortRank:Open = 2
     SortRank:Cursor = -1
     SortRank:Change = -1
     SortRank:Save = 1

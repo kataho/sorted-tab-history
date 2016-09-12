@@ -7,7 +7,6 @@ atom-panel.modal.sorted-tab-history-facade-panel {
   padding: 0;
   border: 0;
   margin: auto;
-  position: relative;
 
   background-color: transparent;
   box-shadow: none;
@@ -19,9 +18,11 @@ atom-panel.modal.sorted-tab-history-facade-panel {
 
   &::before {
     background-color: transparent;
+    box-shadow: none;
   }
   &::after {
     background-color: transparent;
+    box-shadow: none;
   }
 }
 
@@ -73,7 +74,7 @@ atom-panel.modal.sorted-tab-history-facade-panel {
   .info-container {
     display:flex;
     flex-direction: row;
-    margin: -3px auto 0px 9px;
+    margin: -3px auto 0px -4px;
     padding-bottom: 5px;
     justify-content: flex-start;
     font-size: 11px;
@@ -85,7 +86,8 @@ atom-panel.modal.sorted-tab-history-facade-panel {
   .stamp-delay {
     font: Arial;
     font-weight: bold;
-    min-width: 35px;
+    text-align: center;
+    min-width: 48px;
     min-height: 13px;
 
     &[name=select] {
