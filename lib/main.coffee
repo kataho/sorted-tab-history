@@ -22,7 +22,7 @@ module.exports =
     sortRank_open:
       order: 3
       type: 'integer'
-      default: 1
+      default: -1
       title: 'Sort Rank : Open'
       description: 'Sorting priority rank of opening of a new tab item'
       enum: [1, 2, 3, 4, 5, 6, -1]
@@ -57,8 +57,8 @@ module.exports =
       order: 20
       type: 'integer'
       default: 10
-      title: 'Maximum Tabs'
-      description: 'Keeps number of tabs by closing last tabs of the sorted list. (0 for no limit)'
+      title: 'Maximum Tabs in a Pane'
+      description: 'Keeps number of tabs in a pane by closing last tabs of the sorted list. (0 for no limit)'
     circularList:
       order: 30
       type: 'boolean'
