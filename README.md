@@ -56,7 +56,7 @@ Number of tabs we attempt to keep opened in a pane. Lower entry in the history l
 
 ## Recommended init.coffee Settings
 
-Setting long enough partial match timeout is recommended to prevent the popup to be closed while selecting items.
+Setting long enough partial match timeout is recommended to avoid the popup to be closed while selecting items.
 
     atom.keymaps.partialMatchTimeout = 90000
 
