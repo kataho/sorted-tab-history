@@ -12,7 +12,7 @@ Many editors have back/forward navigation feature, meanwhile, there is a small d
 way of ordering items. It represents no ideal one for all people.
 To help you to find the best of your own is the main point of this package.
 
-< picture here >
+[![video here](http://kataho.github.io/sorted-tab-history/images/capture.png)](http://kataho.github.io/sorted-tab-history/video/capture.mp4)
 
 ## Keymap Commands
 
