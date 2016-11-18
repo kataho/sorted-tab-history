@@ -1,7 +1,7 @@
-"atom-workspace":
-  "alt-{": "sorted-tab-history:top"
-  "alt-{ ^alt": "sorted-tab-history:select"
-  "alt-[": "sorted-tab-history:forward"
-  "alt-[ ^alt": "sorted-tab-history:select"
-  "alt-]": "sorted-tab-history:back"
-  "alt-] ^alt": "sorted-tab-history:select"
+'atom-text-editor, atom-workspace':
+  'shift-cmd-right': 'sorted-tab-history:top'
+  'shift-cmd-right ^cmd': 'sorted-tab-history:select'
+  'cmd-right': 'sorted-tab-history:forward'
+  'cmd-right ^cmd': 'sorted-tab-history:select'
+  'cmd-left': 'sorted-tab-history:back'
+  'cmd-left ^cmd': 'sorted-tab-history:select'

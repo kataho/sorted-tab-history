@@ -1,7 +1,7 @@
 {
   "name": "sorted-tab-history",
   "main": "./lib/main",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Yet another tab item manager which sorts tabs with elapsed time from various actions.",
   "repository": "https://github.com/kataho/sorted-tab-history",
   "license": "MIT",

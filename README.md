@@ -16,11 +16,11 @@ To help you to find the best of your own is the main point of this package.
 
 ## Keymap Commands
 
-**Back**  - Activate previous (older) item of current active item in the history (default: alt-] )
+**Back**  - Activate previous (older) item of current active item in the history (default: cmd-left )
 
-**Forward** - Activate next (newer) item of current active item in the history (default: alt-[ )
+**Forward** - Activate next (newer) item of current active item in the history (default: cmd-right )
 
-**Top** - Activate the most recent item in the history (default: alt-shift-[ )
+**Top** - Activate the most recent item in the history (default: shift-cmd-right )
 
 ## Options
 
