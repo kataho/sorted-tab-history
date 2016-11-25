@@ -6,6 +6,6 @@
   "repository": "https://github.com/kataho/sorted-tab-history",
   "license": "MIT",
   "engines": {
-    "atom": ">=1.7.3"
+    "atom": ">=1.12.0"
   }
 }
