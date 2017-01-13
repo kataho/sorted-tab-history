@@ -1,4 +1,4 @@
-{CompositeDisposable} = require 'atom'
+{Disposable, CompositeDisposable} = require 'atom'
 
 module.exports =
 class TabHistoryFacade
@@ -13,14 +13,19 @@ class TabHistoryFacade
       className: 'sorted-tab-history-facade-panel'
     }
     @displayTime = 0
+    @addIconToElement = null
 
   renderHistory: (history, activeItem) ->
+    @addIconToElement ?= (elm, filename) ->
+      elm.classList.add('icon-file-text')
+      new Disposable
+
     list = history.sortedItemList()
 
     createListItem = ->
       li = document.createElement('li')
       e = document.createElement('div')
-      e.classList.add('icon-file-text')
+      e.classList.add('icon')
       li.appendChild(e)
       info = document.createElement('div')
       info.classList.add('info-container')
@@ -44,7 +49,7 @@ class TabHistoryFacade
       span = element.children[0]
       element.classList.remove('active')
       @activateTimeout = setTimeout ((e) -> -> e.classList.add('active'))(element) if item is activeItem
-      span.setAttribute('data-name', item.getTitle())
+      @disposable.add @addIconToElement(span, item.getTitle())
       span.innerText = item.getTitle()
 
       info = history.extraInfoOfItem item

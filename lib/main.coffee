@@ -1,4 +1,4 @@
-{CompositeDisposable} = require 'atom'
+{Disposable, CompositeDisposable} = require 'atom'
 TabHistoryFacade = require './tab-history-facade'
 TabHistoryManager = require './tab-history-manager'
 
@@ -111,3 +111,8 @@ module.exports =
     @disposable.dispose()
     man.dispose() for man in @managers
     @facade.dispose()
+
+  consumeElementIcons: (func) ->
+    @facade.addIconToElement = func
+    new Disposable =>
+      @facade.addIconToElement = null
