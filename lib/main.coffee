@@ -112,7 +112,11 @@ module.exports =
     man.dispose() for man in @managers
     @facade.dispose()
 
-  consumeElementIcons: (func) ->
-    @facade.addIconToElement = func
+  consumeElementIcons: (service) ->
+    @facade.iconClassForPath = (path) ->
+      iconClass = service.iconClassForPath(path)
+      iconClass = iconClass.toString().split(/\s+/g) if iconClass and not Array.isArray iconClass
+      iconClass
+
     new Disposable =>
-      @facade.addIconToElement = null
+      @facade.iconClassForPath = null

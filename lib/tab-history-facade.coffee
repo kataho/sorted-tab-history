@@ -13,12 +13,11 @@ class TabHistoryFacade
       className: 'sorted-tab-history-facade-panel'
     }
     @displayTime = 0
-    @addIconToElement = null
+    @iconClassForPath = null
 
   renderHistory: (history, activeItem) ->
-    @addIconToElement ?= (elm, filename) ->
-      elm.classList.add('icon-file-text')
-      new Disposable
+    @iconClassForPath ?= (path) ->
+      ['icon-file-text']
 
     list = history.sortedItemList()
 
@@ -49,7 +48,8 @@ class TabHistoryFacade
       span = element.children[0]
       element.classList.remove('active')
       @activateTimeout = setTimeout ((e) -> -> e.classList.add('active'))(element) if item is activeItem
-      @disposable.add @addIconToElement(span, item.getTitle())
+      span.className = 'icon' # reset all previous iconClassForPath classes
+      span.classList.add(@iconClassForPath(if 'getPath' of item then item.getPath() else item.getTitle())...)
       span.innerText = item.getTitle()
 
       info = history.extraInfoOfItem item
