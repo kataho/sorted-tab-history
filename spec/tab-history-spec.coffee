@@ -48,6 +48,13 @@ describe 'SortedTabHistory', ->
     it 'makes stuff looks ready to go', ->
       expect(atom.packages.isPackageActive('sorted-tab-history')).toBe true
 
+  describe 'file-icon service', ->
+    it 'should be OK', ->
+      dispatchCommand('sorted-tab-history:back')
+      dispatchCommand('sorted-tab-history:select')
+      expect(mainModule.facade.iconClassForPath).not.toBeNull()
+      expect(mainModule.facade.iconClassForPath('/my/path/xxxx.coffee').join(' ')).toMatch '.*icon-.*'
+
   describe 'List navigation commands', ->
     it 'changes active item in pane to next list item', ->
       expect(activeItemTitle()).toBe 'E4'
