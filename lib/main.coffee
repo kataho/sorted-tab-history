@@ -72,12 +72,13 @@ module.exports =
     @facade = new TabHistoryFacade
     @activePaneId = -1
 
-    newManagerWithFacade = (pane) =>
-      @facade.observeManager new TabHistoryManager(pane)
+    addNewManagerWithFacade = (pane) =>
+      if @managers[pane.id] == undefined
+        @managers[pane.id] = @facade.observeManager new TabHistoryManager(pane)
 
-    @disposable.add atom.workspace.onDidAddPane ({pane}) => @managers[pane.id] = newManagerWithFacade(pane)
+    @disposable.add atom.workspace.onDidAddPane ({pane}) -> addNewManagerWithFacade(pane)
     @disposable.add atom.workspace.onWillDestroyPane ({pane}) => @managers[pane.id].dispose(); delete @managers[pane.id]
-    @managers[pane.id] = newManagerWithFacade(pane) for pane in atom.workspace.getPanes()
+    addNewManagerWithFacade(pane) for pane in atom.workspace.getPanes()
 
     getActivePaneId = =>
       currentActivePaneId = atom.workspace.getActivePane()?.id

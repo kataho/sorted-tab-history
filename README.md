@@ -60,7 +60,12 @@ Setting long enough partial match timeout is recommended to avoid the popup to b
 
     atom.keymaps.partialMatchTimeout = 90000
 
-Insert above line in your init.coffee
+Insert above line in your init.coffee.
+
+Also disabling 'Pending Pane' feature is recommended for managing opened files exclusively by this package.
+To disable, enable (check) 'Allow Pending Pane Items' in Settings and insert below line in your init.coffee.
+
+    atom.workspace.onDidAddPaneItem ({pane}) -> pane.setPendingItem(null)
 
 ## Setting Examples
 
